@@ -41,8 +41,10 @@ public class RegisterStudentFragment extends Fragment
     private static final int REQUEST_CONTACT = 0;
     private static final int REQUEST_CONTACT_PERMISSION = 1;
     private static final int REQUEST_LIVE_PHOTO = 2;
+    private static final int REQUEST_STORAGE_PHOTO = 3;
+    private static final String IS_EDIT = "isEdit";
 
-
+    private FragmentManager fm;
     private Button emailButton;
     private Button phoneButton;
     private TextView firstText;
@@ -58,21 +60,41 @@ public class RegisterStudentFragment extends Fragment
     private Button contactButton;
     private Button livePhoto;
     private ImageView photoDisplay;
+    private Button photoStorage;
     private StudentList list;
     private File photoFile;
+    private Boolean isEdit;
     private ArrayList<Integer> phoneNums;
     private ArrayList<String> emailList;
     private int id;
+    private Button back;
+
+    @Override
+    public void onSaveInstanceState(Bundle bundle)
+    {
+        super.onSaveInstanceState(bundle);
+        bundle.putBoolean(IS_EDIT, isEdit);
+
+    }
 
     @Override
     public void onCreate(Bundle bundle)
     {
         super.onCreate(bundle);
-        list = new StudentList();
-        list.load(getActivity());
-        id = list.findHighestId();
-        phoneNums = new ArrayList<Integer>();
-        emailList = new ArrayList<String>();
+        if(bundle != null)
+        {
+            isEdit = bundle.getBoolean(IS_EDIT);
+        }
+        else
+        {
+            fm = getParentFragmentManager();
+            isEdit = false;
+            list = new StudentList();
+            list.load(getActivity());
+            id = list.findHighestId();
+            phoneNums = new ArrayList<Integer>();
+            emailList = new ArrayList<String>();
+        }
     }
 
     @Override
@@ -83,6 +105,13 @@ public class RegisterStudentFragment extends Fragment
             Bitmap photo = BitmapFactory.decodeFile(photoFile.toString());
             photoDisplay.setImageBitmap(photo);
         }
+        //if getting photo from storage
+        if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_STORAGE_PHOTO)
+        {//TODO check if right way to do it
+            Uri image = resultIntent.getData();
+            photoDisplay.setImageURI(image);
+        }
+
         //get contact details
         if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CONTACT)
         {
@@ -90,7 +119,6 @@ public class RegisterStudentFragment extends Fragment
             Uri contactUri = resultIntent.getData();
             String[] queryFields = new String[]{
                     ContactsContract.Contacts._ID,
-                    ContactsContract.Contacts.DISPLAY_NAME
             };
             Cursor c = getActivity().getContentResolver().query(contactUri, queryFields, null,
                     null, null);
@@ -100,18 +128,15 @@ public class RegisterStudentFragment extends Fragment
                 {
                     c.moveToFirst();
                     int id = c.getInt(0);
-
                     //get names
                     Uri dataUri = ContactsContract.Data.CONTENT_URI;
                     String[] queryName = new String[]{
                             ContactsContract.CommonDataKinds.StructuredName.GIVEN_NAME,
                             ContactsContract.CommonDataKinds.StructuredName.FAMILY_NAME
                     };
-                    String whereClause = ContactsContract.CommonDataKinds.StructuredName.CONTACT_ID + "=? and "
-                            + ContactsContract.CommonDataKinds.StructuredName.FAMILY_NAME + "=?";
+                    String whereClause = ContactsContract.CommonDataKinds.StructuredName.CONTACT_ID + "=?";
                     String [] whereValues = new String[]{
-                            String.valueOf(id),
-                            ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE};
+                            String.valueOf(id)};
                     Cursor nameC = getActivity().getContentResolver().query(dataUri, queryName,
                             whereClause,whereValues,null);
                     try
@@ -121,6 +146,7 @@ public class RegisterStudentFragment extends Fragment
                             nameC.moveToFirst();
                             String first = nameC.getString(0);
                             String last = nameC.getString(1);
+                            System.out.println(first + last);
                             firstInput.setText(first);
                             lastInput.setText(last);
                         }
@@ -129,6 +155,46 @@ public class RegisterStudentFragment extends Fragment
                     {
                         nameC.close();
                     }
+                    //get email and phone
+                    Cursor cEmail = getActivity().getContentResolver().query(ContactsContract.CommonDataKinds.Email.CONTENT_URI,
+                            new String[] {ContactsContract.CommonDataKinds.Email.ADDRESS},
+                            ContactsContract.CommonDataKinds.Email.CONTACT_ID + " = ?",
+                            new String[] {String.valueOf(id)}, null, null);
+                    try
+                    {
+                        emailList = new ArrayList<String>();
+                        if(cEmail.getCount() > 0)
+                        {
+                            cEmail.moveToFirst();
+                            String email = cEmail.getString(0);
+                            //add emails to list
+                            emailList.add(email);
+                        }
+                    }
+                    finally
+                    {
+                        cEmail.close();
+                    }
+                    //phones
+                    Cursor cPhone = getActivity().getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                            new String[] {ContactsContract.CommonDataKinds.Phone.NUMBER},
+                            ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
+                            new String[] {String.valueOf(id)}, null, null);
+                    try
+                    {
+                        phoneNums = new ArrayList<Integer>();
+                        if(cPhone.getCount() > 0)
+                        {
+                            cPhone.moveToFirst();
+                            String phoneNumber = cPhone.getString(0);
+                            phoneNums.add(Integer.parseInt(phoneNumber));
+                        }
+                    }
+                    finally
+                    {
+                        cPhone.close();
+                    }
+
                 }
             }
             finally
@@ -154,7 +220,6 @@ public class RegisterStudentFragment extends Fragment
 
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup ui, Bundle bundle)
     {
@@ -173,9 +238,38 @@ public class RegisterStudentFragment extends Fragment
         contactButton = (Button) view.findViewById(R.id.selectContacts);
         livePhoto = (Button) view.findViewById(R.id.photoLiveButton);
         photoDisplay = (ImageView) view.findViewById(R.id.photoDisplay);
+        photoStorage = (Button) view.findViewById(R.id.photoStorage);
+        back = (Button) view.findViewById(R.id.studToMenu);
+
+        back.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                Menu frag = (Menu) fm.findFragmentById(R.id.menuFrag);
+                if(frag == null)
+                {
+                    frag = new Menu();
+                    fm.beginTransaction().replace(R.id.frame, frag).commit();
+                }
+            }
+        });
+
+        photoStorage.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                Intent storageIntent = new Intent();
+                //MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+                storageIntent.setType("image/*");
+                storageIntent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(storageIntent, REQUEST_STORAGE_PHOTO);
+            }
+        });
 
         livePhoto.setOnClickListener(new View.OnClickListener()
-        {
+        {//TODO chekc app exists
             @Override
             public void onClick(View v)
             {
@@ -238,11 +332,28 @@ public class RegisterStudentFragment extends Fragment
                     int newPhoto = 0;
 
                     //Make student and add to database
-                    id++;
-                    Student newStudent = new Student(id, newFirst, newLast, newPhoto);
-                    newStudent.setNumbers(phoneNums);
-                    newStudent.setEmails(emailList);
-                    list.addStudent(newStudent);
+                    if(isEdit)
+                    {
+                        id++;
+                        Student newStudent = new Student(id, newFirst, newLast, newPhoto);
+                        newStudent.setNumbers(phoneNums);
+                        newStudent.setEmails(emailList);
+                        list.addStudent(newStudent);
+                        toast = toast.makeText(getActivity().getApplicationContext(),"student added"
+                                , Toast.LENGTH_SHORT);
+                        toast.show();;
+                    }
+                    else
+                    {
+                        Student newStudent = new Student(id, newFirst, newLast, newPhoto);
+                        newStudent.setNumbers(phoneNums);
+                        newStudent.setEmails(emailList);
+                        list.updateStudent(newStudent);
+                        toast = toast.makeText(getActivity().getApplicationContext(), "student updated"
+                                , Toast.LENGTH_SHORT);
+                        toast.show();;
+                    }
+
                 }
                 catch (InputException e)
                 {

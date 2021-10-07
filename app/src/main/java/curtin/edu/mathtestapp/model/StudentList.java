@@ -48,12 +48,25 @@ public class StudentList
     {
         return list.size();
     }
+    public ArrayList<Student> getList()
+    {
+        return list;
+    }
 
+    public void updateStudent(Student newStudent)
+    {
+        list.set(list.indexOf(findStudent(newStudent.getID())),newStudent);
+    }
 
     public void addStudent(Student student)
     {
         list.add(student);
         addStudentDb(student);
+    }
+    public void deleteStudent(Student student)
+    {
+        list.remove(student);
+        removeStudentDb(student);
     }
 
     public int findHighestId()
@@ -206,44 +219,42 @@ public class StudentList
                 " AND " + StudentAndPhoneTable.Cols.PHONE + " = ?", whereValue);
     }
 
-    private void updateFactionDb(String old, Student student)
+    private void updateStudentDb(Student student)
     {
         ContentValues cv = new ContentValues();
         cv.put(StudentTable.Cols.ID, student.getID());
         cv.put(StudentTable.Cols.FIRST, student.getFirstName());
         cv.put(StudentTable.Cols.LAST, student.getLastName());
         cv.put(StudentTable.Cols.PHOTO, student.getPhoto());
-        String[] whereValue = {String.valueOf(old)};
+        String[] whereValue = {String.valueOf(student.getID())};
         db.update(StudentTable.NAME, cv, StudentTable.Cols.ID + " = ?", whereValue);
-        //update phones
-        if(!old.equals(student.getID()))
-        {
-            updatePhoneDb(old, student);
-            updateEmailDb(old, student);
-        }
+        //update phones and emails
+        updatePhoneDb(student);
+        updateEmailDb(student);
+
     }
 
-    private void updatePhoneDb(String old, Student student)
+    private void updatePhoneDb(Student student)
     {
         for(int i = 0; i < student.getNumbers().size(); i++)
         {
             ContentValues cv = new ContentValues();
             cv.put(StudentAndPhoneTable.Cols.ID, student.getID());
             cv.put(StudentAndPhoneTable.Cols.PHONE, student.getNumbers().get(i));
-            String[] whereValue = {String.valueOf(old), String.valueOf(student.getNumbers().get(i))};
+            String[] whereValue = {String.valueOf(student.getID()), String.valueOf(student.getNumbers().get(i))};
             phDb.update(StudentAndPhoneTable.NAME,cv ,StudentAndPhoneTable.Cols.ID + " = ?" +
                     " AND " + StudentAndPhoneTable.Cols.PHONE + " = ?", whereValue);
         }
     }
 
-    private void updateEmailDb(String old, Student student)
+    private void updateEmailDb(Student student)
     {
         for(int i = 0; i < student.getNumbers().size(); i++)
         {
             ContentValues cv = new ContentValues();
             cv.put(EmailTable.Cols.ID, student.getID());
             cv.put(EmailTable.Cols.EMAIL, student.getEmails().get(i));
-            String[] whereValue = {String.valueOf(old), String.valueOf(student.getEmails().get(i))};
+            String[] whereValue = {String.valueOf(student.getID()), String.valueOf(student.getEmails().get(i))};
             eDb.update(EmailTable.NAME, cv, EmailTable.Cols.ID + " = ?" +
                     " AND " + EmailTable.Cols.EMAIL + " = ?", whereValue);
         }

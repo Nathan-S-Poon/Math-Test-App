@@ -1,0 +1,156 @@
+package curtin.edu.mathtestapp.registrationfrag;
+
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.ArrayList;
+
+import curtin.edu.mathtestapp.R;
+import curtin.edu.mathtestapp.model.Student;
+import curtin.edu.mathtestapp.model.StudentList;
+
+public class ViewStudents extends Fragment
+{
+    private RecyclerView recycleStudents;
+    private StudentList list;
+    private Button back;
+    private FragmentManager fm;
+
+    @Override
+    public void onCreate(Bundle bundle)
+    {
+        super.onCreate(bundle);
+        fm = getParentFragmentManager();
+        list = new StudentList();
+        list.load(getActivity());
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup ui, Bundle bundle)
+    {
+        View view = inflater.inflate(R.layout.view_list_recycler, ui, false);
+        back = (Button) view.findViewById(R.id.backToMenu);
+        //recyclerview set up
+        recycleStudents = (RecyclerView) view.findViewById(R.id.viewStudentsRecycle);
+        recycleStudents.setLayoutManager(new LinearLayoutManager(getActivity(),
+                LinearLayoutManager.VERTICAL, false));
+        ViewStuAdapter stuAdapter = new ViewStuAdapter(list.getList());
+        recycleStudents.setAdapter(stuAdapter);
+
+        back.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                Menu frag = (Menu) fm.findFragmentById(R.id.menuFrag);
+                if(frag == null)
+                {
+                    frag = new Menu();
+                    fm.beginTransaction().replace(R.id.frame, frag).commit();
+                }
+            }
+        });
+
+
+        return view;
+    }
+
+    /*******************************
+     * Adapter nested in this class
+     */
+    private class ViewStuAdapter extends RecyclerView.Adapter<StudentDataHolder>
+    {
+        private ArrayList<Student> pList;
+        public ViewStuAdapter(ArrayList<Student> pList)
+        {
+            this.pList = pList;
+        }
+        @Override
+        public int getItemCount()
+        {
+            return pList.size();
+        }
+
+        @Override
+        public StudentDataHolder onCreateViewHolder(ViewGroup parent, int viewType)
+        {
+            LayoutInflater li = LayoutInflater.from(getActivity());
+            View view = li.inflate(R.layout.view_list_row, parent, false);
+            return new StudentDataHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(StudentDataHolder vh, int index)
+        {
+            vh.bind(pList.get(index));
+        }
+
+    }
+
+    /*****************************
+     * MyDataHolder
+     */
+    private class StudentDataHolder extends RecyclerView.ViewHolder
+    {
+        private TextView name;
+        private ImageView image;
+        private LinearLayout row;
+        private Button delete;
+
+        public StudentDataHolder(@NonNull View itemView)
+        {
+            super(itemView);
+            //get UI elements
+            name = (TextView) itemView.findViewById(R.id.backToMenu);
+            image = (ImageView) itemView.findViewById(R.id.studentImage);
+            row = (LinearLayout) itemView.findViewById(R.id.studentRow);
+            delete = (Button) itemView.findViewById(R.id.deleteButton);
+        }
+        public void bind(Student data)
+        {
+            if (data != null)
+            {
+                name.setText(data.getFirstName() + " " + data.getLastName());
+                delete.setOnClickListener(new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View v)
+                    {
+                        list.deleteStudent(data);
+                    }
+                });
+                //TODO how to store images in database
+                row.setOnClickListener(new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View v)
+                    {
+                        RegisterStudentFragment frag = (RegisterStudentFragment) fm.findFragmentById(R.id.registration);
+                        if(frag == null)
+                        {
+                            frag = new RegisterStudentFragment();
+                            fm.beginTransaction().replace(R.id.frame, frag).commit();
+                        }
+                    }
+                });
+
+
+            }
+
+        }
+    }
+}
