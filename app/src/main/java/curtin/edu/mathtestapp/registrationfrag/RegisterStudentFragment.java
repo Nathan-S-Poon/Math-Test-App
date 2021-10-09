@@ -22,11 +22,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentResultListener;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -42,7 +44,6 @@ public class RegisterStudentFragment extends Fragment
     private static final int REQUEST_CONTACT_PERMISSION = 1;
     private static final int REQUEST_LIVE_PHOTO = 2;
     private static final int REQUEST_STORAGE_PHOTO = 3;
-    private static final String IS_EDIT = "isEdit";
 
     private FragmentManager fm;
     private Button emailButton;
@@ -58,6 +59,7 @@ public class RegisterStudentFragment extends Fragment
     private Button registerButton;
     private Toast toast;
     private Button contactButton;
+    private Button viewContacts;
     private Button livePhoto;
     private ImageView photoDisplay;
     private Button photoStorage;
@@ -73,8 +75,8 @@ public class RegisterStudentFragment extends Fragment
     public void onSaveInstanceState(Bundle bundle)
     {
         super.onSaveInstanceState(bundle);
-        bundle.putBoolean(IS_EDIT, isEdit);
-
+        bundle.putBoolean("IS_EDIT", isEdit);
+        bundle.putInt("studentID", id);
     }
 
     @Override
@@ -83,7 +85,12 @@ public class RegisterStudentFragment extends Fragment
         super.onCreate(bundle);
         if(bundle != null)
         {
-            isEdit = bundle.getBoolean(IS_EDIT);
+            isEdit = bundle.getBoolean("IS_EDIT");
+            id = bundle.getInt("studentID");
+            if(isEdit)
+            {
+                registerButton.setText("Edit");
+            }
         }
         else
         {
@@ -95,6 +102,36 @@ public class RegisterStudentFragment extends Fragment
             phoneNums = new ArrayList<Integer>();
             emailList = new ArrayList<String>();
         }
+        getParentFragmentManager().setFragmentResultListener("viewToStudent", this, new FragmentResultListener()
+        {
+            @Override
+            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result)
+            {
+                isEdit = result.getBoolean("IS_EDIT");
+                id = result.getInt("studentID");
+                Student curr = list.findStudent(id);
+                firstInput.setText(curr.getFirstName());
+                lastInput.setText(curr.getLastName());
+                phoneNums = curr.getNumbers();
+                emailList = curr.getEmails();
+                registerButton.setText("Edit");
+            }
+        });
+        getParentFragmentManager().setFragmentResultListener("contactsToStudent", this, new FragmentResultListener()
+        {
+            @Override
+            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result)
+            {
+                isEdit = result.getBoolean("IS_EDIT");
+                id = result.getInt("studentID");
+                Student curr = list.findStudent(id);
+                firstInput.setText(curr.getFirstName());
+                lastInput.setText(curr.getLastName());
+                phoneNums = result.getIntegerArrayList("phones");
+                emailList = result.getStringArrayList("emails");
+                registerButton.setText("Edit");
+            }
+        });
     }
 
     @Override
@@ -240,6 +277,27 @@ public class RegisterStudentFragment extends Fragment
         photoDisplay = (ImageView) view.findViewById(R.id.photoDisplay);
         photoStorage = (Button) view.findViewById(R.id.photoStorage);
         back = (Button) view.findViewById(R.id.studToMenu);
+        viewContacts = (Button) view.findViewById(R.id.contactsButton);
+
+        viewContacts.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                Bundle result = new Bundle();
+                result.putInt("studentID", id);
+                result.putBoolean("isEdit", isEdit);
+                result.putIntegerArrayList("phones", phoneNums);
+                result.putStringArrayList("emails", emailList);
+                getParentFragmentManager().setFragmentResult("studentToContacts", result);
+                ViewContacts frag = (ViewContacts) fm.findFragmentById(R.id.contactsRecycler);
+                if(frag == null)
+                {
+                    frag = new ViewContacts();
+                    fm.beginTransaction().replace(R.id.frame, frag).commit();
+                }
+            }
+        });
 
         back.setOnClickListener(new View.OnClickListener()
         {
@@ -332,7 +390,7 @@ public class RegisterStudentFragment extends Fragment
                     int newPhoto = 0;
 
                     //Make student and add to database
-                    if(isEdit)
+                    if(!isEdit)
                     {
                         id++;
                         Student newStudent = new Student(id, newFirst, newLast, newPhoto);
@@ -341,7 +399,7 @@ public class RegisterStudentFragment extends Fragment
                         list.addStudent(newStudent);
                         toast = toast.makeText(getActivity().getApplicationContext(),"student added"
                                 , Toast.LENGTH_SHORT);
-                        toast.show();;
+                        toast.show();
                     }
                     else
                     {
@@ -351,7 +409,7 @@ public class RegisterStudentFragment extends Fragment
                         list.updateStudent(newStudent);
                         toast = toast.makeText(getActivity().getApplicationContext(), "student updated"
                                 , Toast.LENGTH_SHORT);
-                        toast.show();;
+                        toast.show();
                     }
 
                 }
@@ -359,7 +417,7 @@ public class RegisterStudentFragment extends Fragment
                 {
                     toast = toast.makeText(getActivity().getApplicationContext(), e.getMessage()
                     , Toast.LENGTH_SHORT);
-                    toast.show();;
+                    toast.show();
                 }
 
             }

@@ -30,6 +30,14 @@ public class ViewStudents extends Fragment
     private Button back;
     private FragmentManager fm;
 
+    public void setRecycler()
+    {
+        recycleStudents.setLayoutManager(new LinearLayoutManager(getActivity(),
+                LinearLayoutManager.VERTICAL, false));
+        ViewStuAdapter stuAdapter = new ViewStuAdapter(list.getList());
+        recycleStudents.setAdapter(stuAdapter);
+    }
+
     @Override
     public void onCreate(Bundle bundle)
     {
@@ -46,10 +54,7 @@ public class ViewStudents extends Fragment
         back = (Button) view.findViewById(R.id.backToMenu);
         //recyclerview set up
         recycleStudents = (RecyclerView) view.findViewById(R.id.viewStudentsRecycle);
-        recycleStudents.setLayoutManager(new LinearLayoutManager(getActivity(),
-                LinearLayoutManager.VERTICAL, false));
-        ViewStuAdapter stuAdapter = new ViewStuAdapter(list.getList());
-        recycleStudents.setAdapter(stuAdapter);
+        setRecycler();
 
         back.setOnClickListener(new View.OnClickListener()
         {
@@ -115,7 +120,7 @@ public class ViewStudents extends Fragment
         {
             super(itemView);
             //get UI elements
-            name = (TextView) itemView.findViewById(R.id.backToMenu);
+            name = (TextView) itemView.findViewById(R.id.nameText);
             image = (ImageView) itemView.findViewById(R.id.studentImage);
             row = (LinearLayout) itemView.findViewById(R.id.studentRow);
             delete = (Button) itemView.findViewById(R.id.deleteButton);
@@ -124,6 +129,7 @@ public class ViewStudents extends Fragment
         {
             if (data != null)
             {
+                System.out.println(data.getFirstName());
                 name.setText(data.getFirstName() + " " + data.getLastName());
                 delete.setOnClickListener(new View.OnClickListener()
                 {
@@ -131,6 +137,7 @@ public class ViewStudents extends Fragment
                     public void onClick(View v)
                     {
                         list.deleteStudent(data);
+                        setRecycler();
                     }
                 });
                 //TODO how to store images in database
@@ -139,6 +146,10 @@ public class ViewStudents extends Fragment
                     @Override
                     public void onClick(View v)
                     {
+                        Bundle result = new Bundle();
+                        result.putBoolean("IS_EDIT", true);
+                        result.putInt("studentID", data.getID());
+                        getParentFragmentManager().setFragmentResult("viewToStudent", result);
                         RegisterStudentFragment frag = (RegisterStudentFragment) fm.findFragmentById(R.id.registration);
                         if(frag == null)
                         {
