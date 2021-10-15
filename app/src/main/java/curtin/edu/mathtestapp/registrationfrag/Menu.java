@@ -10,6 +10,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import curtin.edu.mathtestapp.R;
+import curtin.edu.mathtestapp.mathstestFrag.StudentSelectionFrag;
+import curtin.edu.mathtestapp.mathstestFrag.TestFrag;
 import curtin.edu.mathtestapp.model.StudentList;
 
 public class Menu extends Fragment
@@ -69,7 +71,13 @@ public class Menu extends Fragment
             @Override
             public void onClick(View v)
             {
-
+                FragmentManager fm = getParentFragmentManager();
+                StudentSelectionFrag frag = (StudentSelectionFrag) fm.findFragmentById(R.id.studentRecyclerLayout);
+                if(frag == null)
+                {
+                    frag = new StudentSelectionFrag();
+                    fm.beginTransaction().replace(R.id.frame, frag).commit();
+                }
             }
         });
 
