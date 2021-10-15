@@ -29,12 +29,16 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.GeneralSecurityException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 
 import javax.net.ssl.HttpsURLConnection;
 
 import curtin.edu.mathtestapp.R;
 import curtin.edu.mathtestapp.model.Student;
+import curtin.edu.mathtestapp.model.TestList;
+import curtin.edu.mathtestapp.model.TestResult;
 
 public class TestFrag extends Fragment
 {
@@ -56,7 +60,9 @@ public class TestFrag extends Fragment
     private Button next;
     private ProgressBar timerBar;
     private ArrayList<String> choiceList;
+    private TestList list;
     private String name;
+    private int id;
     private int listIndex;
     private int endIndex;
     private int questAns;
@@ -66,6 +72,7 @@ public class TestFrag extends Fragment
     private int totalMarks;
     private TextView totalScore;
     private TextView totalTime;
+    private String startTime;
     private boolean loading;
 
     private void setTestLayout()
@@ -163,17 +170,42 @@ public class TestFrag extends Fragment
     public void onSaveInstanceState(Bundle bundle)
     {
         super.onSaveInstanceState(bundle);
-
+        bundle.putStringArrayList("questions", choiceList);
+        bundle.putString("studName",name);
+        bundle.putInt("id", id);
+        bundle.putInt("score", score);
+        bundle.putInt("curtime", currTime);
+        bundle.putInt("totalmarks", totalMarks);
+        bundle.putString("startTime", startTime);
+        bundle.putString("totalTime", totalTime.getText().toString());
+        bundle.putBoolean("loading", loading);
     }
 
     @Override
     public void onCreate(Bundle bundle)
     {
         super.onCreate(bundle);
-        choiceList = new ArrayList<String>();
-        currTime = 0;
-        score = 0;
-        totalMarks = 0;
+        list = new TestList();
+        list.load(getContext());
+        if(bundle != null)
+        {
+            choiceList = bundle.getStringArrayList("questions");
+            currTime = bundle.getInt("curtime");
+            score = bundle.getInt("score");
+            totalMarks = bundle.getInt("totalmarks");
+            id = bundle.getInt("id");
+            startTime = bundle.getString(startTime);
+            name = bundle.getString("studName");
+            loading = bundle.getBoolean("loading");
+        }
+        else
+        {
+            choiceList = new ArrayList<String>();
+            currTime = 0;
+            score = 0;
+            totalMarks = 0;
+            startTime = new Date().toString();
+        }
         getParentFragmentManager().setFragmentResultListener("viewToTest", this, new FragmentResultListener()
         {
             @Override
@@ -181,6 +213,7 @@ public class TestFrag extends Fragment
             {
                 name = result.getString("firstname");
                 name = name + " " + result.getString("lastname");
+                id = result.getInt("id");
             }
         });
     }
@@ -208,6 +241,10 @@ public class TestFrag extends Fragment
         inputAns.setVisibility(View.INVISIBLE);
         totalTime.setText("0");
         totalScore.setText("0/0");
+        if (bundle != null)
+        {
+            totalTime.setText(bundle.getString("totalTime"));
+        }
 
         //get first question
         loading = true;
@@ -222,7 +259,10 @@ public class TestFrag extends Fragment
             public void onClick(View v)
             {
                 //store details
-
+                String studScore = score + "/" + totalMarks;
+                TestResult newResult = new TestResult(id,name,startTime,studScore,
+                        Integer.parseInt(totalTime.getText().toString()));
+                list.addResult(newResult);
                 //end test
                 testError("Test ended");
             }

@@ -159,6 +159,7 @@ public class StudentSelectionFrag extends Fragment
                         Bundle result = new Bundle();
                         result.putString("firstname", data.getFirstName());
                         result.putString("lastname", data.getFirstName());
+                        result.putInt("id", data.getID());
                         getParentFragmentManager().setFragmentResult("viewToTest", result);
                         FragmentManager fm = getParentFragmentManager();
                         TestFrag frag = (TestFrag) fm.findFragmentById(R.id.testLayout);
