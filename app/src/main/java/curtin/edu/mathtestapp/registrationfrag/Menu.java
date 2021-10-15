@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 
 import androidx.fragment.app.Fragment;
@@ -12,6 +13,7 @@ import androidx.fragment.app.FragmentManager;
 import curtin.edu.mathtestapp.R;
 import curtin.edu.mathtestapp.mathstestFrag.StudentSelectionFrag;
 import curtin.edu.mathtestapp.mathstestFrag.TestFrag;
+import curtin.edu.mathtestapp.mathstestFrag.ViewTestsFrag;
 import curtin.edu.mathtestapp.model.StudentList;
 
 public class Menu extends Fragment
@@ -19,7 +21,7 @@ public class Menu extends Fragment
     private Button editStudent;
     private Button testButton;
     private Button viewStudents;
-
+    private Button viewTests;
 
     @Override
     public void onCreate(Bundle bundle)
@@ -35,6 +37,7 @@ public class Menu extends Fragment
         editStudent = (Button) view.findViewById(R.id.AddStudent);
         testButton = (Button) view.findViewById(R.id.startMathButton);
         viewStudents = (Button) view.findViewById(R.id.viewStudents);
+        viewTests = (Button) view.findViewById(R.id.viewTests);
 
         editStudent.setOnClickListener(new View.OnClickListener()
         {
@@ -76,6 +79,21 @@ public class Menu extends Fragment
                 if(frag == null)
                 {
                     frag = new StudentSelectionFrag();
+                    fm.beginTransaction().replace(R.id.frame, frag).commit();
+                }
+            }
+        });
+
+        viewTests.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                FragmentManager fm = getParentFragmentManager();
+                ViewTestsFrag frag = (ViewTestsFrag) fm.findFragmentById(R.id.viewTestRecycle);
+                if(frag == null)
+                {
+                    frag = new ViewTestsFrag();
                     fm.beginTransaction().replace(R.id.frame, frag).commit();
                 }
             }

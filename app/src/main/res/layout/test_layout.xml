@@ -114,25 +114,49 @@
         app:layout_constraintVertical_bias="0.199" />
 
     <TextView
+        android:id="@+id/multichoiceText"
+        android:layout_width="97dp"
+        android:layout_height="79dp"
+        android:text="multiChoice answer:"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.401"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.555" />
+
+    <TextView
         android:id="@+id/selectMultiChoice"
         android:layout_width="158dp"
         android:layout_height="69dp"
-        android:text="Multi choice answer"
+        android:text=""
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.553"
+        app:layout_constraintHorizontal_bias="0.881"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.548" />
+        app:layout_constraintVertical_bias="0.546" />
+
+    <TextView
+        android:id="@+id/inputAnsText"
+        android:layout_width="96dp"
+        android:layout_height="71dp"
+        android:text="Input answer:"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.104"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.709" />
 
     <EditText
         android:id="@+id/inputAnswer"
         android:layout_width="158dp"
         android:layout_height="69dp"
-        android:text="Input answer here"
+        android:text=""
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.43"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.706" />

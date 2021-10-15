@@ -56,6 +56,8 @@ public class TestFrag extends Fragment
     private TextView multiAns;
     private TextView question;
     private EditText inputAns;
+    private TextView inputText;
+    private TextView multiText;
     private Button endButton;
     private Button next;
     private ProgressBar timerBar;
@@ -86,6 +88,8 @@ public class TestFrag extends Fragment
         else if(choiceList.size() == 0)
         {
             setInput();
+            nextOption.setVisibility(View.INVISIBLE);
+            prevOption.setVisibility(View.INVISIBLE);
         }
         else if(choiceList.size() == 2)
         {
@@ -102,7 +106,7 @@ public class TestFrag extends Fragment
         else
         {
             nextOption.setVisibility(View.VISIBLE);
-            prevOption.setVisibility(View.VISIBLE);
+            prevOption.setVisibility(View.INVISIBLE);
             listIndex = 0;
             endIndex = 3;
             setFour(choiceList.get(0), choiceList.get(1), choiceList.get(2), choiceList.get(3));
@@ -230,6 +234,8 @@ public class TestFrag extends Fragment
         multiTri = (Button) view.findViewById(R.id.multiTri);
         multiAns = (TextView) view.findViewById(R.id.selectMultiChoice);
         question = (TextView) view.findViewById(R.id.questionText);
+        multiText = (TextView) view.findViewById(R.id.multichoiceText);
+        inputText = (TextView) view.findViewById(R.id.inputAnswer);
         next = (Button) view.findViewById(R.id.nextButton);
         nextOption = (Button) view.findViewById(R.id.nextChoice);
         prevOption = (Button) view.findViewById(R.id.prevChoice);
@@ -267,7 +273,7 @@ public class TestFrag extends Fragment
                 testError("Test ended");
             }
         });
-
+        //TODO need to fix
         nextOption.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -309,12 +315,13 @@ public class TestFrag extends Fragment
                 {
                     listIndex = listIndex - 4;
                     endIndex = endIndex - 4;
-                    setFour(choiceList.get(listIndex), choiceList.get(listIndex + 1), choiceList.get(listIndex + 2), choiceList.get(endIndex));
                     if (listIndex == 0)
                     {
                         prevOption.setVisibility(View.INVISIBLE);
                     }
+                    setFour(choiceList.get(listIndex), choiceList.get(listIndex + 1), choiceList.get(listIndex + 2), choiceList.get(endIndex));
                     nextOption.setVisibility(View.VISIBLE);
+
                 }
             }
         });
@@ -402,6 +409,8 @@ public class TestFrag extends Fragment
                     totalMarks = totalMarks + 10;
                     //update score
                     totalScore.setText(Integer.toString(score) + "/" + Integer.toString(totalMarks));
+                    inputAns.setText("");
+                    multiAns.setText("");
                     //change to next question
                     loading = true;
                     toast = toast.makeText(getActivity().getApplicationContext(),"fetching question"
@@ -494,6 +503,7 @@ public class TestFrag extends Fragment
                 questAns = jbase.getInt("result");
                 JSONArray opArr = jbase.getJSONArray("options");
                 timeToSolve = jbase.getInt("timetosolve");
+                choiceList = new ArrayList<String>();
                 for(int i = 0; i < opArr.length(); i++)
                 {
                     choiceList.add(Integer.toString(opArr.getInt(i)));
