@@ -105,7 +105,14 @@ public class TestFrag extends Fragment
         }
         else
         {
-            nextOption.setVisibility(View.VISIBLE);
+            if(choiceList.size() > 4)
+            {
+                nextOption.setVisibility(View.VISIBLE);
+            }
+            else
+            {
+                nextOption.setVisibility(View.INVISIBLE);
+            }
             prevOption.setVisibility(View.INVISIBLE);
             listIndex = 0;
             endIndex = 3;
@@ -121,6 +128,16 @@ public class TestFrag extends Fragment
         multi4.setVisibility(View.INVISIBLE);
         multiTri.setVisibility(View.INVISIBLE);
         inputAns.setVisibility(View.VISIBLE);
+    }
+    private void setOne(String ans1)
+    {
+        multi1.setVisibility(View.VISIBLE);
+        multi2.setVisibility(View.INVISIBLE);
+        multi3.setVisibility(View.INVISIBLE);
+        multi4.setVisibility(View.INVISIBLE);
+        multiTri.setVisibility(View.INVISIBLE);
+        multi1.setText(ans1);
+
     }
     private void setTwo(String ans1, String ans2)
     {
@@ -292,10 +309,17 @@ public class TestFrag extends Fragment
                         listIndex = endIndex + 1;
                         endIndex = choiceList.size() - 1;
                         setThree(choiceList.get(listIndex), choiceList.get(listIndex + 1), choiceList.get(endIndex));
-                    } else
+                    }
+                    else if (choiceList.size() - endIndex - 1 == 1)
                     {
                         listIndex = endIndex + 1;
-                        endIndex = endIndex + 4;
+                        endIndex = choiceList.size() - 1;
+                        setOne(choiceList.get(listIndex));
+                    }
+                    else
+                    {
+                        listIndex = endIndex + 1;
+                        endIndex = listIndex + 3;
                         setFour(choiceList.get(listIndex), choiceList.get(listIndex + 1), choiceList.get(listIndex + 2), choiceList.get(endIndex));
                     }
                     if (endIndex == choiceList.size() - 1)
@@ -303,6 +327,7 @@ public class TestFrag extends Fragment
                         nextOption.setVisibility(View.INVISIBLE);
                     }
                     prevOption.setVisibility(View.VISIBLE);
+
                 }
             }
         });
@@ -314,18 +339,16 @@ public class TestFrag extends Fragment
                 if(!loading)
                 {
                     listIndex = listIndex - 4;
-                    endIndex = endIndex - 4;
+                    endIndex = listIndex + 3;
                     if (listIndex == 0)
                     {
                         prevOption.setVisibility(View.INVISIBLE);
                     }
                     setFour(choiceList.get(listIndex), choiceList.get(listIndex + 1), choiceList.get(listIndex + 2), choiceList.get(endIndex));
                     nextOption.setVisibility(View.VISIBLE);
-
                 }
             }
         });
-
 
         multi1.setOnClickListener(new View.OnClickListener()
         {
@@ -434,7 +457,7 @@ public class TestFrag extends Fragment
         protected String doInBackground(Void... params)
         {
             String result = "";//TODO use emulator ip
-            String completeURL = Uri.parse("https://192.168.166.120:8000/random/question/")
+            String completeURL = Uri.parse("https://172.31.231.209:8000/random/question/")
                     .buildUpon()
                     .appendQueryParameter("method", "thedata.getit")
                     .appendQueryParameter("api_key", API_KEY)

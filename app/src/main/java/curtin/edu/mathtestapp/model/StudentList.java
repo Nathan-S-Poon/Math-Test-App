@@ -21,6 +21,7 @@ import curtin.edu.mathtestapp.databases.EmailDbHelper.*;
 
 public class StudentList
 {
+    private int id;
     private ArrayList<Student> list;
     private SQLiteDatabase db;
     private SQLiteDatabase phDb;//phone database
