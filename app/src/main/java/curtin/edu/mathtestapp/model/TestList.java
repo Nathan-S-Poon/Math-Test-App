@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.CursorWrapper;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Parcelable;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -65,6 +66,20 @@ public class TestList
             }
         }
     }
+
+    //delete all tests with student id
+    public void deleteStudentResults(int id)
+    {
+        for(int i = 0; i < list.size(); i++)
+        {
+            if(id == list.get(i).getId())
+            {
+                list.remove(list.get(i));
+                removeTestDb(list.get(i));
+            }
+        }
+    }
+
     public void deleteResult(TestResult result)
     {
         list.remove(result);

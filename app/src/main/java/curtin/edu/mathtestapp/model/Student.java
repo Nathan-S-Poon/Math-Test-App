@@ -2,12 +2,14 @@ package curtin.edu.mathtestapp.model;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import java.util.ArrayList;
 
 import curtin.edu.mathtestapp.databases.StudentDbHelper;
 
-public class Student
+public class Student implements Parcelable
 {
     private int ID;
     private String firstName;
@@ -34,6 +36,46 @@ public class Student
     {
         emails.add(email);
     }
+
+
+    /*Parcelable code*/
+    public static final Parcelable.Creator<Student> CREATOR = new Parcelable.Creator<Student>()
+    {
+        @Override
+        public Student createFromParcel(Parcel in)
+        {
+            return new Student(in);
+        }
+
+        @Override
+        public Student[] newArray(int size)
+        {
+            return new Student[size];
+        }
+    };
+    protected Student(Parcel in)
+    {
+        this.ID = in.readInt();
+        this.firstName = in.readString();
+        this.lastName = in.readString();
+        this.photo = in.readInt();
+        this.numbers = in.readArrayList(null);
+        this.emails = in.readArrayList(null);
+    }
+    public void writeToParcel(Parcel out, int flags)
+    {
+        out.writeInt(ID);
+        out.writeString(firstName);
+        out.writeString(lastName);
+        out.writeInt(photo);
+        out.writeList(numbers);
+        out.writeList(emails);
+    }
+    public int describeContents()
+    {
+        return 0;
+    }
+    //parcelable code end
 
 
     //Getters and setters

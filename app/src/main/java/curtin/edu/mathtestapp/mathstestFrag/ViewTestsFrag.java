@@ -33,12 +33,16 @@ import curtin.edu.mathtestapp.registrationfrag.ViewStudents;
 public class ViewTestsFrag extends Fragment
 {
     private RecyclerView recycleTest;
+    private RecyclerView recycleSelect;
     private TestList list;
     private Button back;
     private FragmentManager fm;
     private ArrayList<TestResult> curList;
+    private ArrayList<TestResult> selectList;
     private Button ascend;
     private Button descend;
+    private Button send;
+    private Button selectAll;
 
     public void setRecycler()
     {
@@ -48,7 +52,23 @@ public class ViewTestsFrag extends Fragment
         recycleTest.setAdapter(testAdapter);
     }
 
+    public void setSelectRecycler()
+    {
+        recycleSelect.setLayoutManager(new LinearLayoutManager(getActivity(),
+                LinearLayoutManager.VERTICAL, false));
+        SelectTestAdapter selectAdapter = new SelectTestAdapter(selectList);
+        recycleSelect.setAdapter(selectAdapter);
+    }
+
     @Override
+    public void onSaveInstanceState(Bundle bundle)
+    {
+        super.onSaveInstanceState(bundle);
+        bundle.putParcelableArrayList("selectlist", selectList);
+        bundle.putParcelableArrayList("curlist", curList);
+    }
+
+        @Override
     public void onCreate(Bundle bundle)
     {
         super.onCreate(bundle);
@@ -57,11 +77,13 @@ public class ViewTestsFrag extends Fragment
         list.load(getActivity());
         if(bundle != null)
         {
-
+            selectList = bundle.getParcelableArrayList("selectlist");
+            curList = bundle.getParcelableArrayList("curlist");
         }
         else
         {
             curList = list.getList();
+            selectList = new ArrayList<TestResult>();
         }
     }
 
@@ -72,9 +94,13 @@ public class ViewTestsFrag extends Fragment
         back = (Button) view.findViewById(R.id.backToMenu);
         descend = (Button) view.findViewById(R.id.sortDButton);
         ascend = (Button) view.findViewById(R.id.sortAButton);
+        selectAll = (Button) view.findViewById(R.id.selectAll);
+        send = (Button) view.findViewById(R.id.toEmail);
         //recyclerview set up
         recycleTest = (RecyclerView) view.findViewById(R.id.viewTestRecycle);
+        recycleSelect = (RecyclerView) view.findViewById(R.id.selectedTestsRecycle);
         setRecycler();
+        setSelectRecycler();
 
         descend.setOnClickListener(new View.OnClickListener()
         {
@@ -99,6 +125,30 @@ public class ViewTestsFrag extends Fragment
         });
 
         back.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                Menu frag = (Menu) fm.findFragmentById(R.id.menuFrag);
+                if(frag == null)
+                {
+                    frag = new Menu();
+                    fm.beginTransaction().replace(R.id.frame, frag).commit();
+                }
+            }
+        });
+        selectAll.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                selectList = new ArrayList<TestResult>();
+                selectList = list.getList();
+                setSelectRecycler();
+            }
+        });
+
+        send.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
@@ -157,8 +207,85 @@ public class ViewTestsFrag extends Fragment
         private TextView date;
         private TextView time;
         private TextView score;
+        private LinearLayout row;
 
         public TestDataHolder(@NonNull View itemView)
+        {
+            super(itemView);
+            //get UI elements
+            name = (TextView) itemView.findViewById(R.id.nameText);
+            date = (TextView) itemView.findViewById(R.id.dateText);
+            time = (TextView) itemView.findViewById(R.id.timeText);
+            score = (TextView) itemView.findViewById(R.id.scoreText);
+            row = (LinearLayout) itemView.findViewById(R.id.testRow);
+        }
+        public void bind(TestResult data)
+        {
+            if (data != null)
+            {
+                name.setText(data.getName());
+                date.setText(data.getDate());
+                time.setText(Integer.toString(data.getTime()));
+                score.setText(data.getScore());
+                row.setOnClickListener(new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View v)
+                    {
+                        //add to select recycler
+                        selectList.add(data);
+                        setSelectRecycler();
+                    }
+                });
+            }
+
+        }
+    }
+
+    /*******************************
+     * Adapter nested in this class
+     */
+    private class SelectTestAdapter extends RecyclerView.Adapter<SelectDataHolder>
+    {
+        private ArrayList<TestResult> pList;
+        public SelectTestAdapter(ArrayList<TestResult> pList)
+        {
+            this.pList = pList;
+        }
+        @Override
+        public int getItemCount()
+        {
+            return pList.size();
+        }
+
+        @Override
+        public SelectDataHolder onCreateViewHolder(ViewGroup parent, int viewType)
+        {
+            LayoutInflater li = LayoutInflater.from(getActivity());
+            View view = li.inflate(R.layout.select_test_row, parent, false);
+            return new SelectDataHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(SelectDataHolder vh, int index)
+        {
+            vh.bind(pList.get(index));
+        }
+
+    }
+
+    /*****************************
+     * MyDataHolder
+     */
+    private class SelectDataHolder extends RecyclerView.ViewHolder
+    {
+        private TextView name;
+        private TextView date;
+        private TextView time;
+        private TextView score;
+        private Button delete;
+
+        public SelectDataHolder(@NonNull View itemView)
         {
             super(itemView);
             //get UI elements
@@ -175,6 +302,16 @@ public class ViewTestsFrag extends Fragment
                 date.setText(data.getDate());
                 time.setText(Integer.toString(data.getTime()));
                 score.setText(data.getScore());
+
+                delete.setOnClickListener(new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View v)
+                    {
+                        selectList.remove(data);
+                        setSelectRecycler();
+                    }
+                });
             }
 
         }

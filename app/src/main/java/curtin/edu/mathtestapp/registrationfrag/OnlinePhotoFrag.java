@@ -26,6 +26,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentResultListener;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -52,6 +53,14 @@ public class  OnlinePhotoFrag extends Fragment
     private Bitmap[] bitArr;
     private int bitCount;
     private int imgCount;
+    private int stuID;
+    private Bitmap selectedPhoto;
+    private Button leave;
+    private String firstname;
+    private String lastName;
+    private ArrayList<Integer> numbers;
+    private ArrayList<String> emails;
+    private boolean isEdit;
 
     public void setRecycler()
     {
@@ -67,6 +76,12 @@ public class  OnlinePhotoFrag extends Fragment
         super.onSaveInstanceState(bundle);
         bundle.putString("input", searchInput.getText().toString());
         bundle.putSerializable("list", list);
+        bundle.putInt("ID", stuID);
+        bundle.putString("first", firstname);
+        bundle.putString("last", lastName);
+        bundle.putIntegerArrayList("phone", numbers);
+        bundle.putStringArrayList("emails", emails);
+        bundle.putBoolean("edit", isEdit);
 
     }
 
@@ -79,10 +94,29 @@ public class  OnlinePhotoFrag extends Fragment
         bitCount = 0;
         if(bundle != null)
         {
+            isEdit = bundle.getBoolean("edit");
+            stuID = bundle.getInt("ID");
+            firstname = bundle.getString("first");
+            lastName = bundle.getString("last");
+            numbers = bundle.getIntegerArrayList("phone");
+            emails = bundle.getStringArrayList("emails");
             list = (ArrayList<Bitmap[]>) bundle.getSerializable("list");
             searchInput.setText(bundle.getString("input"));
             setRecycler();
         }
+        getParentFragmentManager().setFragmentResultListener("regToOnline", this, new FragmentResultListener()
+        {
+            @Override
+            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result)
+            {
+                isEdit = result.getBoolean("isEdit");
+                stuID = result.getInt("ID");
+                firstname = result.getString("first");
+                lastName = result.getString("last");
+                numbers = result.getIntegerArrayList("phone");
+                emails = result.getStringArrayList("emails");
+            }
+        });
     }
 
     @Override
@@ -92,6 +126,29 @@ public class  OnlinePhotoFrag extends Fragment
         searchButton = (Button) view.findViewById(R.id.searchButton);
         searchInput = (EditText) view.findViewById(R.id.searchInput);
         photoRecycler = (RecyclerView) view.findViewById(R.id.imageRecycler);
+
+        leave.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                Bundle result = new Bundle();
+                result.putInt("ID", stuID);
+                result.putString("first", firstname);
+                result.putString("last", lastName);
+                result.putIntegerArrayList("phone", numbers);
+                result.putStringArrayList("emails", emails);
+                result.putBoolean("isEdit", isEdit);
+                getParentFragmentManager().setFragmentResult("onlineToReg", result);
+                FragmentManager fm = getParentFragmentManager();
+                RegisterStudentFragment frag = (RegisterStudentFragment) fm.findFragmentById(R.id.registration);
+                if(frag == null)
+                {
+                    frag = new RegisterStudentFragment();
+                    fm.beginTransaction().replace(R.id.frame, frag).commit();
+                }
+            }
+        });
 
         searchButton.setOnClickListener(new View.OnClickListener()
         {

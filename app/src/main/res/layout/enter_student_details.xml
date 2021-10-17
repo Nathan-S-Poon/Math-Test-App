@@ -43,6 +43,18 @@
         app:layout_constraintVertical_bias="0.859" />
 
     <Button
+        android:id="@+id/onlineButton"
+        android:layout_width="141dp"
+        android:layout_height="57dp"
+        android:text="Online photos"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.185"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.859" />
+
+    <Button
         android:id="@+id/photoLiveButton"
         android:layout_width="141dp"
         android:layout_height="57dp"

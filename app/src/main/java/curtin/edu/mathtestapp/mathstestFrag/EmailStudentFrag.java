@@ -1,11 +1,10 @@
-package curtin.edu.mathtestapp.registrationfrag;
+package curtin.edu.mathtestapp.mathstestFrag;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -14,6 +13,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentResultListener;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -22,15 +22,15 @@ import java.util.ArrayList;
 import curtin.edu.mathtestapp.R;
 import curtin.edu.mathtestapp.model.Student;
 import curtin.edu.mathtestapp.model.StudentList;
-import curtin.edu.mathtestapp.model.TestList;
+import curtin.edu.mathtestapp.registrationfrag.Menu;
 
-public class ViewStudents extends Fragment
+public class EmailStudentFrag extends Fragment
 {
     private RecyclerView recycleStudents;
     private StudentList list;
     private Button back;
     private FragmentManager fm;
-    private TestList testList;
+    private Toast toast;
 
     public void setRecycler()
     {
@@ -47,17 +47,27 @@ public class ViewStudents extends Fragment
         fm = getParentFragmentManager();
         list = new StudentList();
         list.load(getActivity());
-        testList = new TestList();
-        testList.load(getActivity());
+        //if an error occurred during test
+        getParentFragmentManager().setFragmentResultListener("errorTest", this, new FragmentResultListener()
+        {
+            @Override
+            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result)
+            {
+                String errorMsg = result.getString("errormessage");
+                toast = toast.makeText(getActivity().getApplicationContext(),errorMsg
+                        , Toast.LENGTH_LONG);
+                toast.show();
+            }
+        });
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup ui, Bundle bundle)
     {
-        View view = inflater.inflate(R.layout.view_list_recycler, ui, false);
+        View view = inflater.inflate(R.layout.student_email_recycler, ui, false);
         back = (Button) view.findViewById(R.id.backToMenu);
         //recyclerview set up
-        recycleStudents = (RecyclerView) view.findViewById(R.id.viewStudentsRecycle);
+        recycleStudents = (RecyclerView) view.findViewById(R.id.viewEmailStudents);
         setRecycler();
 
         back.setOnClickListener(new View.OnClickListener()
@@ -65,10 +75,10 @@ public class ViewStudents extends Fragment
             @Override
             public void onClick(View v)
             {
-                Menu frag = (Menu) fm.findFragmentById(R.id.menuFrag);
+                ViewTestsFrag frag = (ViewTestsFrag) fm.findFragmentById(R.id.viewTestRecycle);
                 if(frag == null)
                 {
-                    frag = new Menu();
+                    frag = new ViewTestsFrag();
                     fm.beginTransaction().replace(R.id.frame, frag).commit();
                 }
             }
@@ -119,7 +129,6 @@ public class ViewStudents extends Fragment
         private ImageView image;
         private LinearLayout row;
         private Button delete;
-        private Button tests;
 
         public StudentDataHolder(@NonNull View itemView)
         {
@@ -129,34 +138,16 @@ public class ViewStudents extends Fragment
             image = (ImageView) itemView.findViewById(R.id.studentImage);
             row = (LinearLayout) itemView.findViewById(R.id.studentRow);
             delete = (Button) itemView.findViewById(R.id.deleteButton);
-            tests = (Button) itemView.findViewById(R.id.viewTests);
+            delete.setVisibility(View.INVISIBLE);
+            image.setVisibility(View.INVISIBLE);
 
         }
         public void bind(Student data)
         {
             if (data != null)
             {
-
+                System.out.println(data.getFirstName());
                 name.setText(data.getFirstName() + " " + data.getLastName());
-                delete.setOnClickListener(new View.OnClickListener()
-                {
-                    @Override
-                    public void onClick(View v)
-                    {
-                        list.deleteStudent(data);
-                        //delete test info
-                        testList.deleteStudentResults(data.getID());
-                        setRecycler();
-                    }
-                });
-                tests.setOnClickListener(new View.OnClickListener()
-                {
-                    @Override
-                    public void onClick(View v)
-                    {
-
-                    }
-                });
                 //TODO how to store images in database
                 row.setOnClickListener(new View.OnClickListener()
                 {
@@ -164,13 +155,15 @@ public class ViewStudents extends Fragment
                     public void onClick(View v)
                     {
                         Bundle result = new Bundle();
-                        result.putBoolean("IS_EDIT", true);
-                        result.putInt("studentID", data.getID());
-                        getParentFragmentManager().setFragmentResult("viewToStudent", result);
-                        RegisterStudentFragment frag = (RegisterStudentFragment) fm.findFragmentById(R.id.registration);
+                        result.putString("firstname", data.getFirstName());
+                        result.putString("lastname", data.getLastName());
+                        result.putInt("id", data.getID());
+                        getParentFragmentManager().setFragmentResult("viewToTest", result);
+                        FragmentManager fm = getParentFragmentManager();
+                        TestFrag frag = (TestFrag) fm.findFragmentById(R.id.testLayout);
                         if(frag == null)
                         {
-                            frag = new RegisterStudentFragment();
+                            frag = new TestFrag();
                             fm.beginTransaction().replace(R.id.frame, frag).commit();
                         }
                     }

@@ -46,6 +46,7 @@ public class RegisterStudentFragment extends Fragment
     private static final int REQUEST_STORAGE_PHOTO = 3;
 
     private FragmentManager fm;
+    private Button onlinePhoto;
     private Button emailButton;
     private Button phoneButton;
     private TextView firstText;
@@ -130,6 +131,24 @@ public class RegisterStudentFragment extends Fragment
                 phoneNums = result.getIntegerArrayList("phones");
                 emailList = result.getStringArrayList("emails");
                 registerButton.setText("Edit");
+            }
+        });
+        getParentFragmentManager().setFragmentResultListener("onlineToReg", this, new FragmentResultListener()
+        {
+            @Override
+            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result)
+            {
+                isEdit = result.getBoolean("isEdit");
+                id = result.getInt("ID");
+                firstInput.setText(result.getString("first"));
+                lastInput.setText(result.getString("last"));
+                phoneNums = result.getIntegerArrayList("phone");
+                emailList = result.getStringArrayList("emails");
+                if(isEdit)
+                {
+                    registerButton.setText("Edit");
+                }
+
             }
         });
     }
@@ -278,6 +297,7 @@ public class RegisterStudentFragment extends Fragment
         photoStorage = (Button) view.findViewById(R.id.photoStorage);
         back = (Button) view.findViewById(R.id.studToMenu);
         viewContacts = (Button) view.findViewById(R.id.contactsButton);
+        onlinePhoto = (Button) view.findViewById(R.id.onlineButton);
 
         viewContacts.setOnClickListener(new View.OnClickListener()
         {
@@ -310,6 +330,29 @@ public class RegisterStudentFragment extends Fragment
                     frag = new Menu();
                     fm.beginTransaction().replace(R.id.frame, frag).commit();
                 }
+            }
+        });
+
+        onlinePhoto.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                Bundle result = new Bundle();
+                result.putInt("ID", id);
+                result.putString("first", firstInput.getText().toString());
+                result.putString("last", lastInput.getText().toString());
+                result.putIntegerArrayList("phone", phoneNums);
+                result.putStringArrayList("emails", emailList);
+                result.putBoolean("isEdit", isEdit);
+                getParentFragmentManager().setFragmentResult("regToOnline", result);
+                OnlinePhotoFrag frag = (OnlinePhotoFrag) fm.findFragmentById(R.id.onlinePhotosLayout);
+                if(frag == null)
+                {
+                    frag = new OnlinePhotoFrag();
+                    fm.beginTransaction().replace(R.id.frame, frag).commit();
+                }
+
             }
         });
 

@@ -13,6 +13,20 @@
         android:text="Menu"/>
 
     <Button
+        android:id="@+id/selectAll"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_weight="1"
+        android:text="Select all results"/>
+
+    <Button
+        android:id="@+id/toEmail"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_weight="1"
+        android:text="email results"/>
+
+    <Button
         android:id="@+id/sortAButton"
         android:layout_width="match_parent"
         android:layout_height="30dp"
@@ -28,6 +42,14 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/viewTestRecycle"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="9"
+        android:orientation="vertical">
+    </androidx.recyclerview.widget.RecyclerView>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/selectedTestsRecycle"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="9"
