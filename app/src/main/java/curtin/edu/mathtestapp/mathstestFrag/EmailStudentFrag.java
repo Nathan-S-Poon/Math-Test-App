@@ -22,12 +22,16 @@ import java.util.ArrayList;
 import curtin.edu.mathtestapp.R;
 import curtin.edu.mathtestapp.model.Student;
 import curtin.edu.mathtestapp.model.StudentList;
+import curtin.edu.mathtestapp.model.TestResult;
 import curtin.edu.mathtestapp.registrationfrag.Menu;
 
 public class EmailStudentFrag extends Fragment
 {
     private RecyclerView recycleStudents;
+    private RecyclerView recyclerSelect;
     private StudentList list;
+    private ArrayList<Student> selectList;
+    private ArrayList<TestResult> resultsList;
     private Button back;
     private FragmentManager fm;
     private Toast toast;
@@ -40,6 +44,22 @@ public class EmailStudentFrag extends Fragment
         recycleStudents.setAdapter(stuAdapter);
     }
 
+    public void setSelectRecycler()
+    {
+        recyclerSelect.setLayoutManager(new LinearLayoutManager(getActivity(),
+                LinearLayoutManager.VERTICAL, false));
+        ViewSelectAdapter stuAdapter = new ViewSelectAdapter(selectList);
+        recyclerSelect.setAdapter(stuAdapter);
+    }
+
+    public void onSaveInstanceState(Bundle bundle)
+    {
+        super.onSaveInstanceState(bundle);
+        bundle.putParcelableArrayList("selectlist", selectList);
+        bundle.putParcelableArrayList("resultslist", resultsList);
+
+    }
+
     @Override
     public void onCreate(Bundle bundle)
     {
@@ -47,18 +67,25 @@ public class EmailStudentFrag extends Fragment
         fm = getParentFragmentManager();
         list = new StudentList();
         list.load(getActivity());
-        //if an error occurred during test
-        getParentFragmentManager().setFragmentResultListener("errorTest", this, new FragmentResultListener()
+        if(bundle != null)
+        {
+            selectList = bundle.getParcelableArrayList("selectlist");
+            resultsList = bundle.getParcelableArrayList("resultslist");
+        }
+        else
+        {
+            selectList = new ArrayList<Student>();
+        }
+        getParentFragmentManager().setFragmentResultListener("resultsToEmail", this, new FragmentResultListener()
         {
             @Override
             public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result)
             {
-                String errorMsg = result.getString("errormessage");
-                toast = toast.makeText(getActivity().getApplicationContext(),errorMsg
-                        , Toast.LENGTH_LONG);
-                toast.show();
+                resultsList = result.getParcelableArrayList("resultslist");
             }
         });
+
+
     }
 
     @Override
@@ -68,13 +95,18 @@ public class EmailStudentFrag extends Fragment
         back = (Button) view.findViewById(R.id.backToMenu);
         //recyclerview set up
         recycleStudents = (RecyclerView) view.findViewById(R.id.viewEmailStudents);
+        recyclerSelect  = (RecyclerView) view.findViewById(R.id.selectEmailStudents);
         setRecycler();
+        setSelectRecycler();
 
         back.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
+                Bundle result = new Bundle();
+                result.putParcelableArrayList("resultslist",selectList);
+                getParentFragmentManager().setFragmentResult("emailToResults", result);
                 ViewTestsFrag frag = (ViewTestsFrag) fm.findFragmentById(R.id.viewTestRecycle);
                 if(frag == null)
                 {
@@ -154,18 +186,82 @@ public class EmailStudentFrag extends Fragment
                     @Override
                     public void onClick(View v)
                     {
-                        Bundle result = new Bundle();
-                        result.putString("firstname", data.getFirstName());
-                        result.putString("lastname", data.getLastName());
-                        result.putInt("id", data.getID());
-                        getParentFragmentManager().setFragmentResult("viewToTest", result);
-                        FragmentManager fm = getParentFragmentManager();
-                        TestFrag frag = (TestFrag) fm.findFragmentById(R.id.testLayout);
-                        if(frag == null)
-                        {
-                            frag = new TestFrag();
-                            fm.beginTransaction().replace(R.id.frame, frag).commit();
-                        }
+                        selectList.add(data);
+                        setSelectRecycler();
+                    }
+                });
+
+
+            }
+
+        }
+    }
+    /*******************************
+     * Select adapter
+     */
+    private class ViewSelectAdapter extends RecyclerView.Adapter<SelectDataHolder>
+    {
+        private ArrayList<Student> pList;
+        public ViewSelectAdapter(ArrayList<Student> pList)
+        {
+            this.pList = pList;
+        }
+        @Override
+        public int getItemCount()
+        {
+            return pList.size();
+        }
+
+        @Override
+        public SelectDataHolder onCreateViewHolder(ViewGroup parent, int viewType)
+        {
+            LayoutInflater li = LayoutInflater.from(getActivity());
+            View view = li.inflate(R.layout.view_list_row, parent, false);
+            return new SelectDataHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(SelectDataHolder vh, int index)
+        {
+            vh.bind(pList.get(index));
+        }
+
+    }
+
+    /*****************************
+     * MyDataHolder
+     */
+    private class SelectDataHolder extends RecyclerView.ViewHolder
+    {
+        private TextView name;
+        private ImageView image;
+        private LinearLayout row;
+        private Button delete;
+
+        public SelectDataHolder(@NonNull View itemView)
+        {
+            super(itemView);
+            //get UI elements
+            name = (TextView) itemView.findViewById(R.id.nameText);
+            image = (ImageView) itemView.findViewById(R.id.studentImage);
+            row = (LinearLayout) itemView.findViewById(R.id.studentRow);
+            delete = (Button) itemView.findViewById(R.id.deleteButton);
+            image.setVisibility(View.INVISIBLE);
+
+        }
+        public void bind(Student data)
+        {
+            if (data != null)
+            {
+
+                name.setText(data.getFirstName() + " " + data.getLastName());
+                //TODO how to store images in database
+                delete.setOnClickListener(new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View v)
+                    {
+
                     }
                 });
 

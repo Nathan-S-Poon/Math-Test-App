@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentResultListener;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -85,6 +86,15 @@ public class ViewTestsFrag extends Fragment
             curList = list.getList();
             selectList = new ArrayList<TestResult>();
         }
+        getParentFragmentManager().setFragmentResultListener("emailToResults", this, new FragmentResultListener()
+        {
+            @Override
+            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result)
+            {
+                selectList = result.getParcelableArrayList("resultslist");
+                setSelectRecycler();
+            }
+        });
     }
 
     @Override
@@ -153,7 +163,10 @@ public class ViewTestsFrag extends Fragment
             @Override
             public void onClick(View v)
             {
+                Bundle result = new Bundle();
+                result.putParcelableArrayList("resultslist",selectList);
                 Menu frag = (Menu) fm.findFragmentById(R.id.menuFrag);
+                getParentFragmentManager().setFragmentResult("resultsToEmail", result);
                 if(frag == null)
                 {
                     frag = new Menu();
