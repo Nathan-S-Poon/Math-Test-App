@@ -1,5 +1,7 @@
 package curtin.edu.mathtestapp.registrationfrag;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -138,6 +140,9 @@ public class ViewStudents extends Fragment
             {
 
                 name.setText(data.getFirstName() + " " + data.getLastName());
+                //set image
+                Bitmap photo = BitmapFactory.decodeFile(data.getPhoto().toString());
+                image.setImageBitmap(photo);
                 delete.setOnClickListener(new View.OnClickListener()
                 {
                     @Override

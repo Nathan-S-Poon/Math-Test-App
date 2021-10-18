@@ -17,6 +17,7 @@ import androidx.fragment.app.FragmentResultListener;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import curtin.edu.mathtestapp.R;
@@ -36,6 +37,15 @@ public class ViewContacts extends Fragment
     private int id;
     private boolean isEdit;
     private FragmentManager fm;
+    //student details
+    private String firstname;
+    private String lastName;
+    private ArrayList<Integer> numbers;
+    private ArrayList<String> emails;
+    private String emailStr;
+    private String phoneStr;
+    private File photo;
+
 
     public void setRecyclers()
     {
@@ -57,6 +67,11 @@ public class ViewContacts extends Fragment
         bundle.putStringArrayList("emails", emailList);
         bundle.putIntegerArrayList("phone", phoneList);
         bundle.putBoolean("isEdit", isEdit);
+        bundle.putSerializable("photo", photo);
+        bundle.putString("emailStr", emailStr);
+        bundle.putString("phoneStr", phoneStr);
+        bundle.putString("first", firstname);
+        bundle.putString("last", lastName);
         bundle.putInt("id", id);
     }
 
@@ -71,6 +86,11 @@ public class ViewContacts extends Fragment
         {
             phoneList = bundle.getIntegerArrayList("phone");
             emailList = bundle.getStringArrayList("emails");
+            photo = (File) bundle.getSerializable("photo");
+            emailStr = bundle.getString("emailStr");
+            phoneStr = bundle.getString("phoneStr");
+            firstname = bundle.getString("first");
+            lastName = bundle.getString("last");
             id = bundle.getInt("id");
             isEdit = bundle.getBoolean("isEdit");
         }
@@ -81,7 +101,11 @@ public class ViewContacts extends Fragment
             {
                 id = result.getInt("studentID");
                 isEdit = result.getBoolean("isEdit");
-                Student curr = list.findStudent(id);
+                firstname = result.getString("first");
+                lastName = result.getString("last");
+                emailStr = result.getString("emailStr");
+                phoneStr = result.getString("phoneStr");
+                photo = (File) result.getSerializable("photo");
                 phoneList = result.getIntegerArrayList("phones");
                 emailList = result.getStringArrayList("emails");
                 setRecyclers();
@@ -106,9 +130,15 @@ public class ViewContacts extends Fragment
             public void onClick(View v)
             {
                 Bundle result = new Bundle();
+                result.putBoolean("IS_EDIT", isEdit);
                 result.putInt("studentID", id);
-                result.putIntegerArrayList("phones", phoneList);
+                result.putString("first", firstname);
+                result.putString("last", lastName);
+                result.putString("emailStr", emailStr);
+                result.putString("phoneStr", phoneStr);
+                result.putSerializable("photo", photo);
                 result.putStringArrayList("emails", emailList);
+                result.putIntegerArrayList("phones", phoneList);
                 getParentFragmentManager().setFragmentResult("contactsToStudent", result);
                 RegisterStudentFragment frag = (RegisterStudentFragment) fm.findFragmentById(R.id.registration);
                 if(frag == null)

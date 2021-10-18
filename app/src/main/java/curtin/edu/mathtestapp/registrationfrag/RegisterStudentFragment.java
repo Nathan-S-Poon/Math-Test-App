@@ -2,6 +2,8 @@ package curtin.edu.mathtestapp.registrationfrag;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -31,6 +33,8 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentResultListener;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import curtin.edu.mathtestapp.R;
@@ -78,6 +82,14 @@ public class RegisterStudentFragment extends Fragment
         super.onSaveInstanceState(bundle);
         bundle.putBoolean("IS_EDIT", isEdit);
         bundle.putInt("studentID", id);
+        bundle.putString("first", firstInput.getText().toString());
+        bundle.putString("last", lastInput.getText().toString());
+        bundle.putString("emailStr", emailInput.getText().toString());
+        bundle.putString("phoneStr", phoneInput.getText().toString());
+        bundle.putString("photo", photoFile.toString());
+        bundle.putStringArrayList("emails", emailList);
+        bundle.putIntegerArrayList("phones", phoneNums);
+
     }
 
     @Override
@@ -92,6 +104,18 @@ public class RegisterStudentFragment extends Fragment
             {
                 registerButton.setText("Edit");
             }
+            firstInput.setText(bundle.getString("first"));
+            lastInput.setText(bundle.getString("last"));
+            emailInput.setText(bundle.getString("emailStr"));
+            phoneInput.setText(bundle.getString("phoneStr"));
+            photoFile = new File(bundle.getString("photo", photoFile.toString()));
+            emailList = bundle.getStringArrayList("emails");
+            phoneNums = bundle.getIntegerArrayList("phones");
+            if (photoFile != null)
+            {
+                Bitmap photo = BitmapFactory.decodeFile(photoFile.toString());
+                photoDisplay.setImageBitmap(photo);
+            }
         }
         else
         {
@@ -101,6 +125,7 @@ public class RegisterStudentFragment extends Fragment
             list.load(getActivity());
             id = list.findHighestId();
             phoneNums = new ArrayList<Integer>();
+            photoFile = null;
             emailList = new ArrayList<String>();
         }
         getParentFragmentManager().setFragmentResultListener("viewToStudent", this, new FragmentResultListener()
@@ -113,9 +138,15 @@ public class RegisterStudentFragment extends Fragment
                 Student curr = list.findStudent(id);
                 firstInput.setText(curr.getFirstName());
                 lastInput.setText(curr.getLastName());
+                photoFile = new File(curr.getPhoto());
                 phoneNums = curr.getNumbers();
                 emailList = curr.getEmails();
                 registerButton.setText("Edit");
+                if (photoFile != null)
+                {
+                    Bitmap photo = BitmapFactory.decodeFile(photoFile.toString());
+                    photoDisplay.setImageBitmap(photo);
+                }
             }
         });
         getParentFragmentManager().setFragmentResultListener("contactsToStudent", this, new FragmentResultListener()
@@ -125,12 +156,22 @@ public class RegisterStudentFragment extends Fragment
             {
                 isEdit = result.getBoolean("IS_EDIT");
                 id = result.getInt("studentID");
-                Student curr = list.findStudent(id);
-                firstInput.setText(curr.getFirstName());
-                lastInput.setText(curr.getLastName());
+                firstInput.setText(result.getString("first"));
+                lastInput.setText(result.getString("last"));
+                emailInput.setText(result.getString("emailStr"));
+                phoneInput.setText(result.getString("phoneStr"));
+                photoFile = (File) result.getSerializable("photo");
                 phoneNums = result.getIntegerArrayList("phones");
                 emailList = result.getStringArrayList("emails");
-                registerButton.setText("Edit");
+                if(isEdit)
+                {
+                    registerButton.setText("Edit");
+                }
+                if (photoFile != null)
+                {
+                    Bitmap photo = BitmapFactory.decodeFile(photoFile.toString());
+                    photoDisplay.setImageBitmap(photo);
+                }
             }
         });
         getParentFragmentManager().setFragmentResultListener("onlineToReg", this, new FragmentResultListener()
@@ -144,9 +185,17 @@ public class RegisterStudentFragment extends Fragment
                 lastInput.setText(result.getString("last"));
                 phoneNums = result.getIntegerArrayList("phone");
                 emailList = result.getStringArrayList("emails");
+                emailInput.setText(result.getString("emailStr"));
+                phoneInput.setText(result.getString("phoneStr"));
+                photoFile = (File) result.getSerializable("photo");
                 if(isEdit)
                 {
                     registerButton.setText("Edit");
+                }
+                if (photoFile != null)
+                {
+                    Bitmap photo = BitmapFactory.decodeFile(photoFile.toString());
+                    photoDisplay.setImageBitmap(photo);
                 }
 
             }
@@ -160,12 +209,37 @@ public class RegisterStudentFragment extends Fragment
         {
             Bitmap photo = BitmapFactory.decodeFile(photoFile.toString());
             photoDisplay.setImageBitmap(photo);
+            //add photos to internal storage
+            System.out.println(photoFile.toString());
         }
         //if getting photo from storage
         if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_STORAGE_PHOTO)
-        {//TODO check if right way to do it
+        {//TODO put photo in right file and reference
+            //https://www.tutorialspoint.com/how-to-write-an-image-file-in-internal-storage-in-android
             Uri image = resultIntent.getData();
             photoDisplay.setImageURI(image);
+            //save photo in internal storage
+            ContextWrapper cw = new ContextWrapper(getContext());
+            File dir = cw.getDir("files", Context.MODE_PRIVATE);
+            File file = new File(dir, "photoStore.jpg");
+            System.out.println(file.toString());
+            if(!file.exists());
+            {
+                FileOutputStream fos = null;
+                try
+                {
+                    fos = new FileOutputStream(file);
+                    Bitmap bit = MediaStore.Images.Media.getBitmap(this.getActivity().getContentResolver(), image);
+                    bit.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+                    fos.flush();
+                    fos.close();
+                    photoFile = file;
+                }
+                catch (IOException e)
+                {
+
+                }
+            }
         }
 
         //get contact details
@@ -309,6 +383,11 @@ public class RegisterStudentFragment extends Fragment
                 result.putBoolean("isEdit", isEdit);
                 result.putIntegerArrayList("phones", phoneNums);
                 result.putStringArrayList("emails", emailList);
+                result.putString("first", firstInput.getText().toString());
+                result.putString("last", lastInput.getText().toString());
+                result.putString("emailStr", emailInput.getText().toString());
+                result.putString("phoneStr", phoneInput.getText().toString());
+                result.putSerializable("photo", photoFile);
                 getParentFragmentManager().setFragmentResult("studentToContacts", result);
                 ViewContacts frag = (ViewContacts) fm.findFragmentById(R.id.contactsRecycler);
                 if(frag == null)
@@ -345,6 +424,9 @@ public class RegisterStudentFragment extends Fragment
                 result.putIntegerArrayList("phone", phoneNums);
                 result.putStringArrayList("emails", emailList);
                 result.putBoolean("isEdit", isEdit);
+                result.putString("emailStr", emailInput.getText().toString());
+                result.putString("phoneStr", phoneInput.getText().toString());
+                result.putSerializable("photo", photoFile);
                 getParentFragmentManager().setFragmentResult("regToOnline", result);
                 OnlinePhotoFrag frag = (OnlinePhotoFrag) fm.findFragmentById(R.id.onlinePhotosLayout);
                 if(frag == null)
@@ -374,7 +456,7 @@ public class RegisterStudentFragment extends Fragment
             @Override
             public void onClick(View v)
             {
-                photoFile = new File(getActivity().getFilesDir(), "photo.jpg");
+                photoFile = new File(getActivity().getFilesDir(), "photo" + Integer.toString(id) + ".jpg");
                 Intent fullPhotoIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 Uri cameraURi = FileProvider.getUriForFile(
                         getActivity(), "edu.curtin.edu.mathsapp.registerstudentfragment",
@@ -430,7 +512,15 @@ public class RegisterStudentFragment extends Fragment
                     {
                         throw new InputException("Last name can't be empty");
                     }
-                    int newPhoto = 0;
+                    if(phoneNums.size() == 0)
+                    {
+                        throw new InputException("Need at least 1 phone number");
+                    }
+                    if(emailList.size() == 0)
+                    {
+                        throw new InputException("Need at least 1 email");
+                    }
+                    String newPhoto = photoFile.toString();
 
                     //Make student and add to database
                     if(!isEdit)

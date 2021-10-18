@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -163,14 +164,24 @@ public class ViewTestsFrag extends Fragment
             @Override
             public void onClick(View v)
             {
-                Bundle result = new Bundle();
-                result.putParcelableArrayList("resultslist",selectList);
-                Menu frag = (Menu) fm.findFragmentById(R.id.menuFrag);
-                getParentFragmentManager().setFragmentResult("resultsToEmail", result);
-                if(frag == null)
+                if(selectList.size() != 0)
                 {
-                    frag = new Menu();
-                    fm.beginTransaction().replace(R.id.frame, frag).commit();
+                    Bundle result = new Bundle();
+                    result.putParcelableArrayList("resultslist", selectList);
+                    Menu frag = (Menu) fm.findFragmentById(R.id.menuFrag);
+                    getParentFragmentManager().setFragmentResult("resultsToEmail", result);
+                    if (frag == null)
+                    {
+                        frag = new Menu();
+                        fm.beginTransaction().replace(R.id.frame, frag).commit();
+                    }
+                }
+                else
+                {
+                    Toast toast = new Toast(getContext());
+                    toast = toast.makeText(getActivity().getApplicationContext(),"Need to select some results"
+                            , Toast.LENGTH_LONG);
+                    toast.show();
                 }
             }
         });

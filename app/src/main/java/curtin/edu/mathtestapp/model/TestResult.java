@@ -23,6 +23,13 @@ public class TestResult implements Parcelable
         this.time = time;
     }
 
+    public String toString()
+    {
+        String str = "name: " + name + " date: " + date + " score: " + score + " time in s: " + time;
+        return str;
+    }
+
+
     /*Parcelable code*/
     public static final Parcelable.Creator<TestResult> CREATOR = new Parcelable.Creator<TestResult>()
     {

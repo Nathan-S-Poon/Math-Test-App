@@ -22,7 +22,7 @@ public class  StudentDbHelper extends SQLiteOpenHelper
                  StudentTable.Cols.ID + " INTEGER, " +
                  StudentTable.Cols.FIRST + " TEXT, " +
                  StudentTable.Cols.LAST + " TEXT, " +
-                 StudentTable.Cols.PHOTO + " INTEGER)");
+                 StudentTable.Cols.PHOTO + " TEXT)");
     }
     @Override
     public void onUpgrade(SQLiteDatabase db, int v1, int v2)

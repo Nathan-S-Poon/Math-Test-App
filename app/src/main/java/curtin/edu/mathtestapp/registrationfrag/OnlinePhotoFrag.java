@@ -31,6 +31,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -60,6 +61,9 @@ public class  OnlinePhotoFrag extends Fragment
     private String lastName;
     private ArrayList<Integer> numbers;
     private ArrayList<String> emails;
+    private String emailStr;
+    private String phoneStr;
+    private File photo;
     private boolean isEdit;
 
     public void setRecycler()
@@ -79,6 +83,9 @@ public class  OnlinePhotoFrag extends Fragment
         bundle.putInt("ID", stuID);
         bundle.putString("first", firstname);
         bundle.putString("last", lastName);
+        bundle.putSerializable("photo", photo);
+        bundle.putString("emailStr", emailStr);
+        bundle.putString("phoneStr", phoneStr);
         bundle.putIntegerArrayList("phone", numbers);
         bundle.putStringArrayList("emails", emails);
         bundle.putBoolean("edit", isEdit);
@@ -100,6 +107,9 @@ public class  OnlinePhotoFrag extends Fragment
             lastName = bundle.getString("last");
             numbers = bundle.getIntegerArrayList("phone");
             emails = bundle.getStringArrayList("emails");
+            photo = (File) bundle.getSerializable("photo");
+            emailStr = bundle.getString("emailStr");
+            phoneStr = bundle.getString("phoneStr");
             list = (ArrayList<Bitmap[]>) bundle.getSerializable("list");
             searchInput.setText(bundle.getString("input"));
             setRecycler();
@@ -115,6 +125,9 @@ public class  OnlinePhotoFrag extends Fragment
                 lastName = result.getString("last");
                 numbers = result.getIntegerArrayList("phone");
                 emails = result.getStringArrayList("emails");
+                emailStr = result.getString("emailStr");
+                phoneStr = result.getString("phoneStr");
+                photo = (File) result.getSerializable("photo");
             }
         });
     }
@@ -136,6 +149,9 @@ public class  OnlinePhotoFrag extends Fragment
                 result.putInt("ID", stuID);
                 result.putString("first", firstname);
                 result.putString("last", lastName);
+                result.putString("emailStr", emailStr);
+                result.putString("phoneStr", phoneStr);
+                result.putSerializable("photo", photo);
                 result.putIntegerArrayList("phone", numbers);
                 result.putStringArrayList("emails", emails);
                 result.putBoolean("isEdit", isEdit);

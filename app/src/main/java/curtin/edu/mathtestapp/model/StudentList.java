@@ -281,7 +281,7 @@ public class StudentList
             int id = getInt(getColumnIndex(StudentTable.Cols.ID));
             String first = getString(getColumnIndex(StudentTable.Cols.FIRST));
             String last = getString(getColumnIndex(StudentTable.Cols.LAST));
-            int photo = getInt(getColumnIndex(StudentTable.Cols.PHOTO));
+            String photo = getString(getColumnIndex(StudentTable.Cols.PHOTO));
             return new Student(id, first, last, photo);
         }
     }

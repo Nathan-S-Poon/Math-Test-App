@@ -12,6 +12,13 @@
         android:layout_weight="1"
         android:text="back to Test results"/>
 
+    <Button
+        android:id="@+id/sendResults"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_weight="1"
+        android:text="Send Test Results to Students"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/viewEmailStudents"
         android:layout_width="match_parent"

@@ -14,11 +14,21 @@ public class Student implements Parcelable
     private int ID;
     private String firstName;
     private String lastName;
-    private int photo;
+    private String photo;
     private ArrayList<Integer> numbers;
     private ArrayList<String> emails;
 
-    public Student(int ID, String first, String last, int photo)
+    public Student()
+    {
+        ID = 0;
+        firstName = "";
+        lastName = "";
+        photo = "";
+        numbers = new ArrayList<Integer>();
+        emails = new ArrayList<String>();
+    }
+
+    public Student(int ID, String first, String last, String photo)
     {
         this.ID = ID;
         firstName = first;
@@ -58,7 +68,7 @@ public class Student implements Parcelable
         this.ID = in.readInt();
         this.firstName = in.readString();
         this.lastName = in.readString();
-        this.photo = in.readInt();
+        this.photo = in.readString();
         this.numbers = in.readArrayList(null);
         this.emails = in.readArrayList(null);
     }
@@ -67,7 +77,7 @@ public class Student implements Parcelable
         out.writeInt(ID);
         out.writeString(firstName);
         out.writeString(lastName);
-        out.writeInt(photo);
+        out.writeString(photo);
         out.writeList(numbers);
         out.writeList(emails);
     }
@@ -85,7 +95,7 @@ public class Student implements Parcelable
         return ID;
     }
 
-    public int getPhoto()
+    public String getPhoto()
     {
         return photo;
     }
@@ -121,7 +131,7 @@ public class Student implements Parcelable
     {
         this.numbers = numbers;
     }
-    public void setPhoto(int photo)
+    public void setPhoto(String photo)
     {
         this.photo = photo;
     }

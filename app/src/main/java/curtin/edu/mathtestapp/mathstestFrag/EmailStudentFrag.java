@@ -1,5 +1,9 @@
 package curtin.edu.mathtestapp.mathstestFrag;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,12 +31,15 @@ import curtin.edu.mathtestapp.registrationfrag.Menu;
 
 public class EmailStudentFrag extends Fragment
 {
+    private static final int REQUEST_EMAIL = 1;
+
     private RecyclerView recycleStudents;
     private RecyclerView recyclerSelect;
     private StudentList list;
     private ArrayList<Student> selectList;
     private ArrayList<TestResult> resultsList;
     private Button back;
+    private Button send;
     private FragmentManager fm;
     private Toast toast;
 
@@ -93,11 +100,52 @@ public class EmailStudentFrag extends Fragment
     {
         View view = inflater.inflate(R.layout.student_email_recycler, ui, false);
         back = (Button) view.findViewById(R.id.backToMenu);
+        send = (Button) view.findViewById(R.id.sendResults);
         //recyclerview set up
         recycleStudents = (RecyclerView) view.findViewById(R.id.viewEmailStudents);
         recyclerSelect  = (RecyclerView) view.findViewById(R.id.selectEmailStudents);
         setRecycler();
         setSelectRecycler();
+
+        send.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                if(selectList.size() != 0)
+                {
+                    //construct email message
+                    String message = "";
+                    for(int i = 0; i < resultsList.size(); i++)
+                    {
+                        message = message + resultsList.get(i).toString() + "\n";
+                    }
+                    ArrayList<String> emailList = new ArrayList<String>();
+                    for(int i = 0; i < selectList.size(); i++)
+                    {
+                        for(int j = 0; j < selectList.get(i).getEmails().size(); j++)
+                        {
+                            emailList.add(selectList.get(i).getEmails().get(j));
+                        }
+                    }
+                    Intent emailIntent = new Intent(Intent.ACTION_SEND);
+                    emailIntent.setData(Uri.parse("mailto:"));
+                    emailIntent.setType("text/plain");
+                    emailIntent.putExtra(Intent.EXTRA_EMAIL, emailList);//sends to all emails
+                    emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Test results");
+                    emailIntent.putExtra(Intent.EXTRA_TEXT, message);
+
+
+                }
+                else
+                {
+                    Toast toast = new Toast(getContext());
+                    toast = toast.makeText(getActivity().getApplicationContext(),"Need to select some students"
+                            , Toast.LENGTH_LONG);
+                    toast.show();
+                }
+            }
+        });
 
         back.setOnClickListener(new View.OnClickListener()
         {
@@ -119,6 +167,16 @@ public class EmailStudentFrag extends Fragment
 
         return view;
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent resultIntent)
+    {
+        if(resultCode == Activity.RESULT_OK && requestCode == REQUEST_EMAIL)
+        {
+
+        }
+    }
+
 
     /*******************************
      * Adapter nested in this class
