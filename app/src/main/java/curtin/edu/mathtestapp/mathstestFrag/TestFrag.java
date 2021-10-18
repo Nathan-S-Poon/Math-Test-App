@@ -3,6 +3,7 @@ package curtin.edu.mathtestapp.mathstestFrag;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.health.SystemHealthManager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -46,6 +47,8 @@ public class TestFrag extends Fragment
     private static final String API_KEY = "01189998819991197253";
 
     private Toast toast;
+    private  CountDownTimer cdTimer;
+    private ProgressBar progress;
     private Button multi1;
     private Button multi2;
     private Button multi3;
@@ -56,8 +59,6 @@ public class TestFrag extends Fragment
     private TextView multiAns;
     private TextView question;
     private EditText inputAns;
-    private TextView inputText;
-    private TextView multiText;
     private Button endButton;
     private Button next;
     private ProgressBar timerBar;
@@ -69,7 +70,8 @@ public class TestFrag extends Fragment
     private int endIndex;
     private int questAns;
     private int timeToSolve;
-    private int currTime;
+    private long currTime;
+    private long timePassed;
     private int score;
     private int totalMarks;
     private TextView totalScore;
@@ -194,8 +196,10 @@ public class TestFrag extends Fragment
         bundle.putStringArrayList("questions", choiceList);
         bundle.putString("studName",name);
         bundle.putInt("id", id);
+        bundle.putInt("timeTosolve", timeToSolve);
         bundle.putInt("score", score);
-        bundle.putInt("curtime", currTime);
+        currTime = timePassed;
+        bundle.putLong("curtime", currTime);
         bundle.putInt("totalmarks", totalMarks);
         bundle.putString("startTime", startTime);
         bundle.putString("totalTime", totalTime.getText().toString());
@@ -211,8 +215,10 @@ public class TestFrag extends Fragment
         if(bundle != null)
         {
             choiceList = bundle.getStringArrayList("questions");
-            currTime = bundle.getInt("curtime");
+            currTime = bundle.getLong("curtime");
             score = bundle.getInt("score");
+            timeToSolve = bundle.getInt("timeTosolve");
+            runCountdown();
             totalMarks = bundle.getInt("totalmarks");
             id = bundle.getInt("id");
             startTime = bundle.getString(startTime);
@@ -223,9 +229,11 @@ public class TestFrag extends Fragment
         {
             choiceList = new ArrayList<String>();
             currTime = 0;
+            timePassed = 0;
             score = 0;
             totalMarks = 0;
             startTime = new Date().toString();
+            cdTimer = null;
         }
         getParentFragmentManager().setFragmentResultListener("viewToTest", this, new FragmentResultListener()
         {
@@ -240,6 +248,28 @@ public class TestFrag extends Fragment
     }
 
 
+    //Timer
+    private void runCountdown()
+    {
+        cdTimer = new CountDownTimer(timeToSolve*1000, 1000)
+        {
+            public void onTick(long millisUntilFinished)
+            {
+                progress.setProgress((int)(millisUntilFinished-currTime)/1000);
+                timePassed = millisUntilFinished;
+                int tt = Integer.parseInt(totalTime.getText().toString()) + 1;
+                totalTime.setText(Integer.toString(tt));
+
+            }
+            public void onFinish()
+            {
+                //get next question
+                fetchNextQuestion();
+            }
+        }.start();
+    }
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup ui, Bundle bundle)
     {
@@ -251,8 +281,6 @@ public class TestFrag extends Fragment
         multiTri = (Button) view.findViewById(R.id.multiTri);
         multiAns = (TextView) view.findViewById(R.id.selectMultiChoice);
         question = (TextView) view.findViewById(R.id.questionText);
-        multiText = (TextView) view.findViewById(R.id.multichoiceText);
-        inputText = (TextView) view.findViewById(R.id.inputAnswer);
         next = (Button) view.findViewById(R.id.nextButton);
         nextOption = (Button) view.findViewById(R.id.nextChoice);
         prevOption = (Button) view.findViewById(R.id.prevChoice);
@@ -261,9 +289,11 @@ public class TestFrag extends Fragment
         inputAns = (EditText) view.findViewById(R.id.inputAnswer);
         totalScore = (TextView) view.findViewById(R.id.scoreText);
         totalTime = (TextView) view.findViewById(R.id.timeText);
+        progress = (ProgressBar) view.findViewById(R.id.timerBar);
         inputAns.setVisibility(View.INVISIBLE);
         totalTime.setText("0");
         totalScore.setText("0/0");
+
         if (bundle != null)
         {
             totalTime.setText(bundle.getString("totalTime"));
@@ -413,38 +443,43 @@ public class TestFrag extends Fragment
             {
                 if(!loading)
                 {
-                    //validate answer and record score
-                    String studAns = "";
-                    if (choiceList.size() == 0)
-                    {
-                        studAns = inputAns.getText().toString();
-                    } else
-                    {
-                        studAns = multiAns.getText().toString();
-                    }
-                    if (studAns.equals(Integer.toString(questAns)))
-                    {
-                        score = score + 10;
-                    } else if (!studAns.equals(""))
-                    {
-                        score = score - 5;
-                    }
-                    totalMarks = totalMarks + 10;
-                    //update score
-                    totalScore.setText(Integer.toString(score) + "/" + Integer.toString(totalMarks));
-                    inputAns.setText("");
-                    multiAns.setText("");
-                    //change to next question
-                    loading = true;
-                    toast = toast.makeText(getActivity().getApplicationContext(),"fetching question"
-                            , Toast.LENGTH_LONG);
-                    toast.show();
-                    new FetchQuestion().execute();
+                    fetchNextQuestion();
                 }
             }
         });
 
         return view;
+    }
+
+    public void fetchNextQuestion()
+    {
+        //validate answer and record score
+        String studAns = "";
+        if (choiceList.size() == 0)
+        {
+            studAns = inputAns.getText().toString();
+        } else
+        {
+            studAns = multiAns.getText().toString();
+        }
+        if (studAns.equals(Integer.toString(questAns)))
+        {
+            score = score + 10;
+        } else if (!studAns.equals(""))
+        {
+            score = score - 5;
+        }
+        totalMarks = totalMarks + 10;
+        //update score
+        totalScore.setText(Integer.toString(score) + "/" + Integer.toString(totalMarks));
+        inputAns.setText("");
+        multiAns.setText("");
+        //change to next question
+        loading = true;
+        toast = toast.makeText(getActivity().getApplicationContext(),"fetching question"
+                , Toast.LENGTH_LONG);
+        toast.show();
+        new FetchQuestion().execute();
     }
 
 
@@ -457,7 +492,7 @@ public class TestFrag extends Fragment
         protected String doInBackground(Void... params)
         {
             String result = "";//TODO use emulator ip
-            String completeURL = Uri.parse("https://172.31.231.209:8000/random/question/")
+            String completeURL = Uri.parse("https://172.31.229.250:8000/random/question/")
                     .buildUpon()
                     .appendQueryParameter("method", "thedata.getit")
                     .appendQueryParameter("api_key", API_KEY)
@@ -533,6 +568,12 @@ public class TestFrag extends Fragment
                 }
                 loading = false;
                 setTestLayout();
+                progress.setMax(timeToSolve);
+                if(cdTimer != null)
+                {
+                    cdTimer.cancel();
+                }
+                runCountdown();
             }
             catch (JSONException e)
             {

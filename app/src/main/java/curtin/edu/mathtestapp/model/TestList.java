@@ -41,7 +41,14 @@ public class TestList
     }
     public ArrayList<TestResult> getList()
     {
-        return list;
+        ArrayList<TestResult> tests = new ArrayList<TestResult>();
+        for (TestResult cur : list)
+        {
+
+            tests.add(cur);
+
+        }
+        return tests;
     }
 
     public int getSize()

@@ -139,6 +139,7 @@ public class  OnlinePhotoFrag extends Fragment
         searchButton = (Button) view.findViewById(R.id.searchButton);
         searchInput = (EditText) view.findViewById(R.id.searchInput);
         photoRecycler = (RecyclerView) view.findViewById(R.id.imageRecycler);
+        leave = (Button) view.findViewById(R.id.leaveButton);
 
         leave.setOnClickListener(new View.OnClickListener()
         {

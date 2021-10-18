@@ -141,7 +141,7 @@ public class ViewTestsFrag extends Fragment
             public void onClick(View v)
             {
                 Menu frag = (Menu) fm.findFragmentById(R.id.menuFrag);
-                if(frag == null)
+                if (frag == null)
                 {
                     frag = new Menu();
                     fm.beginTransaction().replace(R.id.frame, frag).commit();
@@ -153,9 +153,10 @@ public class ViewTestsFrag extends Fragment
             @Override
             public void onClick(View v)
             {
-                selectList = new ArrayList<TestResult>();
+                //selectList = new ArrayList<TestResult>();
                 selectList = list.getList();
                 setSelectRecycler();
+                System.out.println(list.getList().get(0).getName());
             }
         });
 
@@ -168,11 +169,10 @@ public class ViewTestsFrag extends Fragment
                 {
                     Bundle result = new Bundle();
                     result.putParcelableArrayList("resultslist", selectList);
-                    Menu frag = (Menu) fm.findFragmentById(R.id.menuFrag);
-                    getParentFragmentManager().setFragmentResult("resultsToEmail", result);
-                    if (frag == null)
+                    EmailStudentFrag frag = (EmailStudentFrag) fm.findFragmentById(R.id.studentEmailRecycler);
+                    if(frag == null)
                     {
-                        frag = new Menu();
+                        frag = new EmailStudentFrag();
                         fm.beginTransaction().replace(R.id.frame, frag).commit();
                     }
                 }
@@ -317,6 +317,7 @@ public class ViewTestsFrag extends Fragment
             date = (TextView) itemView.findViewById(R.id.dateText);
             time = (TextView) itemView.findViewById(R.id.timeText);
             score = (TextView) itemView.findViewById(R.id.scoreText);
+            delete = (Button) itemView.findViewById(R.id.delete);
         }
         public void bind(TestResult data)
         {

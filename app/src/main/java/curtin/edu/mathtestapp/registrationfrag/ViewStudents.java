@@ -159,7 +159,15 @@ public class ViewStudents extends Fragment
                     @Override
                     public void onClick(View v)
                     {
-
+                        Bundle result = new Bundle();
+                        result.putParcelableArrayList("resultslist", testList.getResults(data.getID()));
+                        getParentFragmentManager().setFragmentResult("viewStudentResult", result);
+                        StudentResultsFrag frag = (StudentResultsFrag) fm.findFragmentById(R.id.StudentTestRecyclerLayout);
+                        if(frag == null)
+                        {
+                            frag = new StudentResultsFrag();
+                            fm.beginTransaction().replace(R.id.frame, frag).commit();
+                        }
                     }
                 });
                 //TODO how to store images in database

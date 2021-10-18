@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentResultListener;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -44,6 +45,13 @@ public class StudentResultsFrag extends Fragment
     }
 
     @Override
+    public void onSaveInstanceState(Bundle bundle)
+    {
+        super.onSaveInstanceState(bundle);
+        bundle.putParcelableArrayList("list",curList);
+    }
+
+        @Override
     public void onCreate(Bundle bundle)
     {
         super.onCreate(bundle);
@@ -52,12 +60,17 @@ public class StudentResultsFrag extends Fragment
         list.load(getActivity());
         if(bundle != null)
         {
-
+            curList = bundle.getParcelableArrayList("list");
         }
-        else
+        getParentFragmentManager().setFragmentResultListener("viewStudentResult", this, new FragmentResultListener()
         {
-
-        }
+            @Override
+            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result)
+            {
+                curList = result.getParcelableArrayList("resultslist");
+                setRecycler();
+            }
+        });
     }
 
     @Override
@@ -68,7 +81,7 @@ public class StudentResultsFrag extends Fragment
         descend = (Button) view.findViewById(R.id.sortDButton);
         ascend = (Button) view.findViewById(R.id.sortAButton);
         //recyclerview set up
-        recycleTest = (RecyclerView) view.findViewById(R.id.viewTestRecycle);
+        recycleTest = (RecyclerView) view.findViewById(R.id.viewStudentTestRecycle);
         curList = list.getResults(id);
         setRecycler();
 

@@ -403,12 +403,26 @@ public class RegisterStudentFragment extends Fragment
             @Override
             public void onClick(View v)
             {
-                Menu frag = (Menu) fm.findFragmentById(R.id.menuFrag);
-                if(frag == null)
+                if(isEdit)
                 {
-                    frag = new Menu();
-                    fm.beginTransaction().replace(R.id.frame, frag).commit();
+                    FragmentManager fm = getParentFragmentManager();
+                    ViewStudents frag = (ViewStudents) fm.findFragmentById(R.id.studentRecyclerLayout);
+                    if(frag == null)
+                    {
+                        frag = new ViewStudents();
+                        fm.beginTransaction().replace(R.id.frame, frag).commit();
+                    }
                 }
+                else
+                {
+                    Menu frag = (Menu) fm.findFragmentById(R.id.menuFrag);
+                    if (frag == null)
+                    {
+                        frag = new Menu();
+                        fm.beginTransaction().replace(R.id.frame, frag).commit();
+                    }
+                }
+
             }
         });
 
@@ -519,6 +533,10 @@ public class RegisterStudentFragment extends Fragment
                     if(emailList.size() == 0)
                     {
                         throw new InputException("Need at least 1 email");
+                    }
+                    if(photoFile == null)
+                    {
+                        throw new InputException("Need a photo");
                     }
                     String newPhoto = photoFile.toString();
 

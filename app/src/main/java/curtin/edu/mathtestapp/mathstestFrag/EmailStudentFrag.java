@@ -319,7 +319,7 @@ public class EmailStudentFrag extends Fragment
                     @Override
                     public void onClick(View v)
                     {
-
+                        selectList.remove(data);
                     }
                 });
 
