@@ -91,6 +91,10 @@ public class  OnlinePhotoFrag extends Fragment
         bundle.putSerializable("photo", photo);
         bundle.putString("emailStr", emailStr);
         bundle.putString("phoneStr", phoneStr);
+        bundle.putBoolean("load", loading);
+        bundle.putInt("bitCount", bitCount);
+        bundle.putInt("imgCount", imgCount);
+        bundle.putParcelable("bitmap", selectedPhoto);
         bundle.putIntegerArrayList("phone", numbers);
         bundle.putStringArrayList("emails", emails);
         bundle.putBoolean("edit", isEdit);
@@ -117,9 +121,12 @@ public class  OnlinePhotoFrag extends Fragment
             photo = (File) bundle.getSerializable("photo");
             emailStr = bundle.getString("emailStr");
             phoneStr = bundle.getString("phoneStr");
+            loading = bundle.getBoolean("load");
+            bitCount = bundle.getInt("bitCount");
+            imgCount = bundle.getInt("imgCount");
+            selectedPhoto = bundle.getParcelable("bitmap");
             list = (Bitmap[][]) bundle.getSerializable("list");
-            searchInput.setText(bundle.getString("input"));
-            setRecycler();
+
         }
         getParentFragmentManager().setFragmentResultListener("regToOnline", this, new FragmentResultListener()
         {
@@ -148,6 +155,14 @@ public class  OnlinePhotoFrag extends Fragment
         display = (ImageView) view.findViewById(R.id.selectImg);
         photoRecycler = (RecyclerView) view.findViewById(R.id.imageRecycler);
         leave = (Button) view.findViewById(R.id.leaveButton);
+        if(bundle != null)
+        {
+            if(selectedPhoto != null)
+            {
+                display.setImageBitmap(selectedPhoto);
+            }
+            searchInput.setText(bundle.getString("input"));
+        }
         setRecycler();
         leave.setOnClickListener(new View.OnClickListener()
         {
@@ -284,8 +299,11 @@ public class  OnlinePhotoFrag extends Fragment
                     @Override
                     public void onClick(View v)
                     {
-                        selectedPhoto = ((BitmapDrawable)image1.getDrawable()).getBitmap();
-                        display.setImageBitmap(selectedPhoto);
+                        if(data[0] != null)
+                        {
+                            selectedPhoto = ((BitmapDrawable) image1.getDrawable()).getBitmap();
+                            display.setImageBitmap(selectedPhoto);
+                        }
                     }
                 });
                 image2.setOnClickListener(new View.OnClickListener()
@@ -293,8 +311,11 @@ public class  OnlinePhotoFrag extends Fragment
                     @Override
                     public void onClick(View v)
                     {
-                        selectedPhoto = ((BitmapDrawable)image2.getDrawable()).getBitmap();
-                        display.setImageBitmap(selectedPhoto);
+                        if(data[1] != null)
+                        {
+                            selectedPhoto = ((BitmapDrawable) image2.getDrawable()).getBitmap();
+                            display.setImageBitmap(selectedPhoto);
+                        }
                     }
                 });
                 image3.setOnClickListener(new View.OnClickListener()
@@ -302,8 +323,11 @@ public class  OnlinePhotoFrag extends Fragment
                     @Override
                     public void onClick(View v)
                     {
-                        selectedPhoto = ((BitmapDrawable)image3.getDrawable()).getBitmap();
-                        display.setImageBitmap(selectedPhoto);
+                        if(data[2]  != null)
+                        {
+                            selectedPhoto = ((BitmapDrawable) image3.getDrawable()).getBitmap();
+                            display.setImageBitmap(selectedPhoto);
+                        }
                     }
                 });
 
