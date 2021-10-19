@@ -1,6 +1,7 @@
 package curtin.edu.mathtestapp.mathstestFrag;
 
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -125,16 +126,32 @@ public class EmailStudentFrag extends Fragment
                     {
                         for(int j = 0; j < selectList.get(i).getEmails().size(); j++)
                         {
+                            System.out.println(selectList.get(i).getEmails().get(j));
                             emailList.add(selectList.get(i).getEmails().get(j));
                         }
+                    }
+                    String[] emails = new String[emailList.size()];
+                    for(int i = 0; i<emailList.size(); i++)
+                    {
+                        emails[i] = emailList.get(i);
                     }
                     Intent emailIntent = new Intent(Intent.ACTION_SEND);
                     emailIntent.setData(Uri.parse("mailto:"));
                     emailIntent.setType("text/plain");
-                    emailIntent.putExtra(Intent.EXTRA_EMAIL, emailList);//sends to all emails
+                    emailIntent.putExtra(Intent.EXTRA_EMAIL, emails);//sends to all emails
                     emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Test results");
                     emailIntent.putExtra(Intent.EXTRA_TEXT, message);
-
+                    try
+                    {
+                        startActivity(Intent.createChooser(emailIntent, "send mail"));
+                    }
+                    catch (ActivityNotFoundException e)
+                    {
+                        Toast toast = new Toast(getContext());
+                        toast = toast.makeText(getActivity().getApplicationContext(),"No email"
+                                , Toast.LENGTH_LONG);
+                        toast.show();
+                    }
 
                 }
                 else
@@ -153,7 +170,7 @@ public class EmailStudentFrag extends Fragment
             public void onClick(View v)
             {
                 Bundle result = new Bundle();
-                result.putParcelableArrayList("resultslist",selectList);
+                result.putParcelableArrayList("resultslist",resultsList);
                 getParentFragmentManager().setFragmentResult("emailToResults", result);
                 ViewTestsFrag frag = (ViewTestsFrag) fm.findFragmentById(R.id.viewTestRecycle);
                 if(frag == null)
@@ -320,6 +337,7 @@ public class EmailStudentFrag extends Fragment
                     public void onClick(View v)
                     {
                         selectList.remove(data);
+                        setSelectRecycler();
                     }
                 });
 

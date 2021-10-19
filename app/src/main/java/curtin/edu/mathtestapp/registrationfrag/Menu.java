@@ -22,6 +22,7 @@ public class Menu extends Fragment
     private Button testButton;
     private Button viewStudents;
     private Button viewTests;
+    private RegisterStudentFragment addFrag;
 
     @Override
     public void onCreate(Bundle bundle)
@@ -45,11 +46,11 @@ public class Menu extends Fragment
             public void onClick(View v)
             {
                 FragmentManager fm = getParentFragmentManager();
-                RegisterStudentFragment frag = (RegisterStudentFragment) fm.findFragmentById(R.id.registration);
-                if(frag == null)
+                addFrag = (RegisterStudentFragment) fm.findFragmentById(R.id.registration);
+                if(addFrag == null)
                 {
-                    frag = new RegisterStudentFragment();
-                    fm.beginTransaction().replace(R.id.frame, frag).commit();
+                    addFrag = new RegisterStudentFragment();
+                    fm.beginTransaction().replace(R.id.frame, addFrag).commit();
                 }
             }
         });

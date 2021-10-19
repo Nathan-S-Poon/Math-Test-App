@@ -154,9 +154,18 @@ public class ViewTestsFrag extends Fragment
             public void onClick(View v)
             {
                 //selectList = new ArrayList<TestResult>();
-                selectList = list.getList();
-                setSelectRecycler();
-                System.out.println(list.getList().get(0).getName());
+                if(list.getSize() > 0)
+                {
+                    selectList = list.getList();
+                    setSelectRecycler();
+                }
+                else
+                {
+                    Toast toast = new Toast(getContext());
+                    toast = toast.makeText(getActivity().getApplicationContext(),"Nothing to select"
+                            , Toast.LENGTH_LONG);
+                    toast.show();
+                }
             }
         });
 
@@ -169,6 +178,7 @@ public class ViewTestsFrag extends Fragment
                 {
                     Bundle result = new Bundle();
                     result.putParcelableArrayList("resultslist", selectList);
+                    getParentFragmentManager().setFragmentResult("resultsToEmail", result);
                     EmailStudentFrag frag = (EmailStudentFrag) fm.findFragmentById(R.id.studentEmailRecycler);
                     if(frag == null)
                     {

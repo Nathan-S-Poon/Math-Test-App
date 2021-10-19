@@ -8,51 +8,51 @@
 
     <Button
         android:id="@+id/viewTests"
-        android:layout_width="161dp"
-        android:layout_height="63dp"
+        android:layout_width="194dp"
+        android:layout_height="81dp"
         android:text="View Tests"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.908"
+        app:layout_constraintHorizontal_bias="0.707"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.326" />
-
-    <Button
-        android:id="@+id/viewStudents"
-        android:layout_width="161dp"
-        android:layout_height="66dp"
-        android:text="View students"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.112"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.147" />
+        app:layout_constraintVertical_bias="0.566" />
 
     <Button
         android:id="@+id/AddStudent"
-        android:layout_width="165dp"
-        android:layout_height="64dp"
+        android:layout_width="202dp"
+        android:layout_height="83dp"
         android:text="add student"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.922"
+        app:layout_constraintHorizontal_bias="0.718"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.149" />
+        app:layout_constraintVertical_bias="0.164" />
+
+    <Button
+        android:id="@+id/viewStudents"
+        android:layout_width="224dp"
+        android:layout_height="87dp"
+        android:text="View students"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.184"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.166" />
 
     <Button
         android:id="@+id/startMathButton"
-        android:layout_width="162dp"
-        android:layout_height="68dp"
+        android:layout_width="210dp"
+        android:layout_height="83dp"
         android:text="Math Tests"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.108"
+        app:layout_constraintHorizontal_bias="0.178"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.321" />
+        app:layout_constraintVertical_bias="0.57" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

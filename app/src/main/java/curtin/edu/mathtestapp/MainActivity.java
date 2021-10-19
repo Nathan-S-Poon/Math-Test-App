@@ -11,19 +11,29 @@ import curtin.edu.mathtestapp.registrationfrag.RegisterStudentFragment;
 
 public class MainActivity extends AppCompatActivity
 {
+    private static final String LOGIN_TAG = "login_tag";
+
     private Menu menuFragment;
+    private FragmentManager fm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        FragmentManager fm = getSupportFragmentManager();
-        menuFragment = (Menu) fm.findFragmentById(R.id.menuFrag);
-        if (menuFragment == null)
+        if(savedInstanceState == null)
         {
-            menuFragment = new Menu();
-            fm.beginTransaction().replace(R.id.frame, menuFragment).commit();
+            fm = getSupportFragmentManager();
+            menuFragment = (Menu) fm.findFragmentById(R.id.menuFrag);
+            if (menuFragment == null)
+            {
+                menuFragment = new Menu();
+                fm.beginTransaction().replace(R.id.frame, menuFragment, LOGIN_TAG).commit();
+            }
+        }
+        else
+        {
+            menuFragment = (Menu) getSupportFragmentManager().findFragmentByTag(LOGIN_TAG);
         }
 
 

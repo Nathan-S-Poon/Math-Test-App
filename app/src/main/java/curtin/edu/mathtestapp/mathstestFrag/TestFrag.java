@@ -47,7 +47,7 @@ public class TestFrag extends Fragment
     private static final String API_KEY = "01189998819991197253";
 
     private Toast toast;
-    private  CountDownTimer cdTimer;
+    private CountDownTimer cdTimer;
     private ProgressBar progress;
     private Button multi1;
     private Button multi2;
@@ -58,6 +58,8 @@ public class TestFrag extends Fragment
     private Button prevOption;
     private TextView multiAns;
     private TextView question;
+    private TextView instructMulti;
+    private TextView instructInput;
     private EditText inputAns;
     private Button endButton;
     private Button next;
@@ -81,7 +83,6 @@ public class TestFrag extends Fragment
 
     private void setTestLayout()
     {
-        System.out.println(choiceList.size());
         //set up multi choice
         if(choiceList.size() == 1)
         {
@@ -116,8 +117,8 @@ public class TestFrag extends Fragment
                 nextOption.setVisibility(View.INVISIBLE);
             }
             prevOption.setVisibility(View.INVISIBLE);
-            listIndex = 0;
-            endIndex = 3;
+            //listIndex = 0;
+            //endIndex = 3;
             setFour(choiceList.get(0), choiceList.get(1), choiceList.get(2), choiceList.get(3));
         }
     }
@@ -130,6 +131,9 @@ public class TestFrag extends Fragment
         multi4.setVisibility(View.INVISIBLE);
         multiTri.setVisibility(View.INVISIBLE);
         inputAns.setVisibility(View.VISIBLE);
+        instructInput.setVisibility(View.VISIBLE);
+        instructMulti.setVisibility(View.INVISIBLE);
+
     }
     private void setOne(String ans1)
     {
@@ -138,6 +142,9 @@ public class TestFrag extends Fragment
         multi3.setVisibility(View.INVISIBLE);
         multi4.setVisibility(View.INVISIBLE);
         multiTri.setVisibility(View.INVISIBLE);
+        inputAns.setVisibility(View.INVISIBLE);
+        instructInput.setVisibility(View.INVISIBLE);
+        instructMulti.setVisibility(View.VISIBLE);
         multi1.setText(ans1);
 
     }
@@ -148,6 +155,9 @@ public class TestFrag extends Fragment
         multi3.setVisibility(View.INVISIBLE);
         multi4.setVisibility(View.INVISIBLE);
         multiTri.setVisibility(View.INVISIBLE);
+        instructInput.setVisibility(View.INVISIBLE);
+        instructMulti.setVisibility(View.VISIBLE);
+        inputAns.setVisibility(View.INVISIBLE);
         multi1.setText(ans1);
         multi2.setText(ans2);
     }
@@ -158,6 +168,9 @@ public class TestFrag extends Fragment
         multi3.setVisibility(View.VISIBLE);
         multi4.setVisibility(View.VISIBLE);
         multiTri.setVisibility(View.VISIBLE);
+        instructInput.setVisibility(View.INVISIBLE);
+        instructMulti.setVisibility(View.VISIBLE);
+        inputAns.setVisibility(View.INVISIBLE);
         multi3.setText(ans2);
         multi4.setText(ans3);
         multiTri.setText(ans1);
@@ -169,10 +182,15 @@ public class TestFrag extends Fragment
         multi3.setVisibility(View.VISIBLE);
         multi4.setVisibility(View.VISIBLE);
         multiTri.setVisibility(View.INVISIBLE);
+        instructInput.setVisibility(View.INVISIBLE);
+        instructMulti.setVisibility(View.VISIBLE);
+        inputAns.setVisibility(View.INVISIBLE);
         multi1.setText(ans1);
         multi2.setText(ans2);
         multi3.setText(ans3);
         multi4.setText(ans4);
+        listIndex = 0;
+        endIndex = 3;
     }
 
     private void testError(String message)
@@ -195,8 +213,14 @@ public class TestFrag extends Fragment
         super.onSaveInstanceState(bundle);
         bundle.putStringArrayList("questions", choiceList);
         bundle.putString("studName",name);
+        bundle.putString("question", question.getText().toString());
+        bundle.putInt("questionAns",questAns);
+        bundle.putString("multiAns", multiAns.getText().toString());
+        bundle.putString("inputAns", inputAns.getText().toString());
         bundle.putInt("id", id);
         bundle.putInt("timeTosolve", timeToSolve);
+        //bundle.putInt("listIdx", listIndex);
+        //bundle.putInt("endIdx", endIndex);
         bundle.putInt("score", score);
         currTime = timePassed;
         bundle.putLong("curtime", currTime);
@@ -215,13 +239,15 @@ public class TestFrag extends Fragment
         if(bundle != null)
         {
             choiceList = bundle.getStringArrayList("questions");
+            questAns = bundle.getInt("questionAns");
             currTime = bundle.getLong("curtime");
             score = bundle.getInt("score");
             timeToSolve = bundle.getInt("timeTosolve");
-            runCountdown();
+            //listIndex = bundle.getInt("listIdx");
+            //endIndex = bundle.getInt("endIdx");
             totalMarks = bundle.getInt("totalmarks");
             id = bundle.getInt("id");
-            startTime = bundle.getString(startTime);
+            startTime = bundle.getString("startTime");
             name = bundle.getString("studName");
             loading = bundle.getBoolean("loading");
         }
@@ -255,11 +281,12 @@ public class TestFrag extends Fragment
         {
             public void onTick(long millisUntilFinished)
             {
+                System.out.println("curr " + currTime);
+                System.out.println("time to: " + timeToSolve);
                 progress.setProgress((int)(millisUntilFinished-currTime)/1000);
-                timePassed = millisUntilFinished;
+                timePassed = timeToSolve*1000 - millisUntilFinished;
                 int tt = Integer.parseInt(totalTime.getText().toString()) + 1;
                 totalTime.setText(Integer.toString(tt));
-
             }
             public void onFinish()
             {
@@ -290,6 +317,8 @@ public class TestFrag extends Fragment
         totalScore = (TextView) view.findViewById(R.id.scoreText);
         totalTime = (TextView) view.findViewById(R.id.timeText);
         progress = (ProgressBar) view.findViewById(R.id.timerBar);
+        instructInput = (TextView) view.findViewById(R.id.inputAnsText);
+        instructMulti = (TextView) view.findViewById(R.id.multichoiceText);
         inputAns.setVisibility(View.INVISIBLE);
         totalTime.setText("0");
         totalScore.setText("0/0");
@@ -297,15 +326,22 @@ public class TestFrag extends Fragment
         if (bundle != null)
         {
             totalTime.setText(bundle.getString("totalTime"));
+            multiAns.setText(bundle.getString("multiAns"));
+            inputAns.setText(bundle.getString("inputAns"));
+            question.setText(bundle.getString("question"));
+            progress.setMax(timeToSolve);
+            setTestLayout();
+            runCountdown();
         }
-
-        //get first question
-        loading = true;
-        toast = toast.makeText(getActivity().getApplicationContext(),"fetching question"
-                , Toast.LENGTH_LONG);
-        toast.show();
-        new FetchQuestion().execute();
-
+        else
+        {
+            //get first question
+            loading = true;
+            toast = toast.makeText(getActivity().getApplicationContext(), "fetching question"
+                    , Toast.LENGTH_LONG);
+            toast.show();
+            new FetchQuestion().execute();
+        }
         endButton.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -492,7 +528,7 @@ public class TestFrag extends Fragment
         protected String doInBackground(Void... params)
         {
             String result = "";//TODO use emulator ip
-            String completeURL = Uri.parse("https://172.31.229.250:8000/random/question/")
+            String completeURL = Uri.parse("https://172.31.234.77:8000/random/question/")
                     .buildUpon()
                     .appendQueryParameter("method", "thedata.getit")
                     .appendQueryParameter("api_key", API_KEY)

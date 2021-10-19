@@ -40,6 +40,13 @@
         android:layout_weight="1"
         android:text="sort scores by descending order"/>
 
+    <TextView
+        android:id="@+id/TestListText"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_weight="1"
+        android:text="Test Results List"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/viewTestRecycle"
         android:layout_width="match_parent"
@@ -47,6 +54,13 @@
         android:layout_weight="9"
         android:orientation="vertical">
     </androidx.recyclerview.widget.RecyclerView>
+
+    <TextView
+        android:id="@+id/selectedListText"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_weight="1"
+        android:text="Selected Results"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/selectedTestsRecycle"

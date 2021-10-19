@@ -51,12 +51,20 @@ public class StudentList
     }
     public ArrayList<Student> getList()
     {
-        return list;
+        ArrayList<Student> students = new ArrayList<Student>();
+        for (Student cur : list)
+        {
+
+            students.add(cur);
+
+        }
+        return students;
     }
 
     public void updateStudent(Student newStudent)
     {
         list.set(list.indexOf(findStudent(newStudent.getID())),newStudent);
+        updateStudentDb(newStudent);
     }
 
     public void addStudent(Student student)
@@ -250,7 +258,7 @@ public class StudentList
 
     private void updateEmailDb(Student student)
     {
-        for(int i = 0; i < student.getNumbers().size(); i++)
+        for(int i = 0; i < student.getEmails().size(); i++)
         {
             ContentValues cv = new ContentValues();
             cv.put(EmailTable.Cols.ID, student.getID());

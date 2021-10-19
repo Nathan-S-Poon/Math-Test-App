@@ -86,7 +86,7 @@ public class RegisterStudentFragment extends Fragment
         bundle.putString("last", lastInput.getText().toString());
         bundle.putString("emailStr", emailInput.getText().toString());
         bundle.putString("phoneStr", phoneInput.getText().toString());
-        bundle.putString("photo", photoFile.toString());
+        bundle.putSerializable("photo", photoFile);
         bundle.putStringArrayList("emails", emailList);
         bundle.putIntegerArrayList("phones", phoneNums);
 
@@ -98,24 +98,16 @@ public class RegisterStudentFragment extends Fragment
         super.onCreate(bundle);
         if(bundle != null)
         {
+            fm = getParentFragmentManager();
             isEdit = bundle.getBoolean("IS_EDIT");
             id = bundle.getInt("studentID");
             if(isEdit)
             {
                 registerButton.setText("Edit");
             }
-            firstInput.setText(bundle.getString("first"));
-            lastInput.setText(bundle.getString("last"));
-            emailInput.setText(bundle.getString("emailStr"));
-            phoneInput.setText(bundle.getString("phoneStr"));
-            photoFile = new File(bundle.getString("photo", photoFile.toString()));
+            photoFile = (File)bundle.getSerializable("photo");
             emailList = bundle.getStringArrayList("emails");
             phoneNums = bundle.getIntegerArrayList("phones");
-            if (photoFile != null)
-            {
-                Bitmap photo = BitmapFactory.decodeFile(photoFile.toString());
-                photoDisplay.setImageBitmap(photo);
-            }
         }
         else
         {
@@ -372,6 +364,18 @@ public class RegisterStudentFragment extends Fragment
         back = (Button) view.findViewById(R.id.studToMenu);
         viewContacts = (Button) view.findViewById(R.id.contactsButton);
         onlinePhoto = (Button) view.findViewById(R.id.onlineButton);
+        if(bundle != null)
+        {
+            firstInput.setText(bundle.getString("first"));
+            lastInput.setText(bundle.getString("last"));
+            emailInput.setText(bundle.getString("emailStr"));
+            phoneInput.setText(bundle.getString("phoneStr"));
+            if (photoFile != null)
+            {
+                Bitmap photo = BitmapFactory.decodeFile(photoFile.toString());
+                photoDisplay.setImageBitmap(photo);
+            }
+        }
 
         viewContacts.setOnClickListener(new View.OnClickListener()
         {
@@ -548,6 +552,8 @@ public class RegisterStudentFragment extends Fragment
                         newStudent.setNumbers(phoneNums);
                         newStudent.setEmails(emailList);
                         list.addStudent(newStudent);
+                        phoneNums = new ArrayList<Integer>();
+                        emailList = new ArrayList<String>();
                         toast = toast.makeText(getActivity().getApplicationContext(),"student added"
                                 , Toast.LENGTH_SHORT);
                         toast.show();
@@ -591,6 +597,9 @@ public class RegisterStudentFragment extends Fragment
                         throw new InputException("Reached maximum of 10 phone numbers");
                     }
                     phoneNums.add(Integer.parseInt(newPhone));
+                    toast = toast.makeText(getActivity().getApplicationContext(), "added number"
+                            , Toast.LENGTH_SHORT);
+                    toast.show();
                 }
                 catch (InputException e)
                 {
@@ -625,6 +634,9 @@ public class RegisterStudentFragment extends Fragment
                         throw new InputException("Reached maximum of 10 emails");
                     }
                     emailList.add(newEmail);
+                    toast = toast.makeText(getActivity().getApplicationContext(), "added email"
+                            , Toast.LENGTH_SHORT);
+                    toast.show();
 
                 }
                 catch (InputException e)
