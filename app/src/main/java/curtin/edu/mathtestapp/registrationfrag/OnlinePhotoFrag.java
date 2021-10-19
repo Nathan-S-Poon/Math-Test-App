@@ -2,6 +2,7 @@ package curtin.edu.mathtestapp.registrationfrag;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -52,9 +53,10 @@ public class  OnlinePhotoFrag extends Fragment
     private Button searchButton;
     private EditText searchInput;
     private RecyclerView photoRecycler;
-    private ArrayList<Bitmap[]> list;
+    private Bitmap[][] list;
     private Bitmap[] bitArr;
     private int bitCount;
+    private boolean loading;
     private int imgCount;
     private int stuID;
     private Bitmap selectedPhoto;
@@ -65,6 +67,7 @@ public class  OnlinePhotoFrag extends Fragment
     private ArrayList<String> emails;
     private String emailStr;
     private String phoneStr;
+    private ImageView display;
     private File photo;
     private boolean isEdit;
 
@@ -99,9 +102,10 @@ public class  OnlinePhotoFrag extends Fragment
     {
         super.onCreate(bundle);
         bitArr = new Bitmap[3];
-        list = new ArrayList<Bitmap[]>();
+        list = new Bitmap[(int)Math.ceil((double)NUM_IMAGES/3)][3];
         bitCount = 0;
         imgCount = 0;
+        loading = false;
         if(bundle != null)
         {
             isEdit = bundle.getBoolean("edit");
@@ -113,7 +117,7 @@ public class  OnlinePhotoFrag extends Fragment
             photo = (File) bundle.getSerializable("photo");
             emailStr = bundle.getString("emailStr");
             phoneStr = bundle.getString("phoneStr");
-            list = (ArrayList<Bitmap[]>) bundle.getSerializable("list");
+            list = (Bitmap[][]) bundle.getSerializable("list");
             searchInput.setText(bundle.getString("input"));
             setRecycler();
         }
@@ -141,6 +145,7 @@ public class  OnlinePhotoFrag extends Fragment
         View view = inflater.inflate(R.layout.online_photos, ui, false);
         searchButton = (Button) view.findViewById(R.id.searchButton);
         searchInput = (EditText) view.findViewById(R.id.searchInput);
+        display = (ImageView) view.findViewById(R.id.selectImg);
         photoRecycler = (RecyclerView) view.findViewById(R.id.imageRecycler);
         leave = (Button) view.findViewById(R.id.leaveButton);
         setRecycler();
@@ -159,6 +164,7 @@ public class  OnlinePhotoFrag extends Fragment
                 result.putIntegerArrayList("phone", numbers);
                 result.putStringArrayList("emails", emails);
                 result.putBoolean("isEdit", isEdit);
+                result.putParcelable("bitmapPhoto", selectedPhoto);
                 getParentFragmentManager().setFragmentResult("onlineToReg", result);
                 FragmentManager fm = getParentFragmentManager();
                 RegisterStudentFragment frag = (RegisterStudentFragment) fm.findFragmentById(R.id.registration);
@@ -177,9 +183,12 @@ public class  OnlinePhotoFrag extends Fragment
             {
                 if(!searchInput.getText().toString().equals(""))
                 {
-
-                    String searchValues = searchInput.getText().toString();
-                    new PixabayTask().execute(searchValues);
+                    if(!loading)
+                    {
+                        loading = true;
+                        String searchValues = searchInput.getText().toString();
+                        new PixabayTask().execute(searchValues);
+                    }
 
                 }
                 else
@@ -207,15 +216,15 @@ public class  OnlinePhotoFrag extends Fragment
      ************************************/
     private class ViewPhotoAdapter extends RecyclerView.Adapter<PhotoDataHolder>
     {
-        private ArrayList<Bitmap[]> pList;
-        public ViewPhotoAdapter(ArrayList<Bitmap[]> pList)
+        private Bitmap[][] pList;
+        public ViewPhotoAdapter(Bitmap[][] pList)
         {
             this.pList = pList;
         }
         @Override
         public int getItemCount()
         {
-            return pList.size();
+            return pList.length;
         }
 
         @Override
@@ -229,7 +238,7 @@ public class  OnlinePhotoFrag extends Fragment
         @Override
         public void onBindViewHolder(PhotoDataHolder vh, int index)
         {
-            vh.bind(pList.get(index));
+            vh.bind(pList[index]);
         }
 
     }
@@ -257,12 +266,15 @@ public class  OnlinePhotoFrag extends Fragment
         {
             if (data != null)
             {
-                image1.setImageBitmap(data[0]);
-                if(data.length > 1)
+                if(data[0] != null)
+                {
+                    image1.setImageBitmap(data[0]);
+                }
+                if(data[1] != null)
                 {
                     image2.setImageBitmap(data[1]);
                 }
-                if(data.length == 3)
+                if(data[2] != null)
                 {
                     image3.setImageBitmap(data[2]);
                 }
@@ -272,7 +284,8 @@ public class  OnlinePhotoFrag extends Fragment
                     @Override
                     public void onClick(View v)
                     {
-
+                        selectedPhoto = ((BitmapDrawable)image1.getDrawable()).getBitmap();
+                        display.setImageBitmap(selectedPhoto);
                     }
                 });
                 image2.setOnClickListener(new View.OnClickListener()
@@ -280,7 +293,8 @@ public class  OnlinePhotoFrag extends Fragment
                     @Override
                     public void onClick(View v)
                     {
-
+                        selectedPhoto = ((BitmapDrawable)image2.getDrawable()).getBitmap();
+                        display.setImageBitmap(selectedPhoto);
                     }
                 });
                 image3.setOnClickListener(new View.OnClickListener()
@@ -288,7 +302,8 @@ public class  OnlinePhotoFrag extends Fragment
                     @Override
                     public void onClick(View v)
                     {
-
+                        selectedPhoto = ((BitmapDrawable)image3.getDrawable()).getBitmap();
+                        display.setImageBitmap(selectedPhoto);
                     }
                 });
 
@@ -329,7 +344,6 @@ public class  OnlinePhotoFrag extends Fragment
             {
                 URL url = new URL(urlString);
                 conn = (HttpURLConnection) url.openConnection();
-                System.out.println(conn.getResponseCode());
                 if(conn == null)
                 {
                     //error
@@ -460,59 +474,26 @@ public class  OnlinePhotoFrag extends Fragment
             if(image != null)
             {
                 //put image
-                if(list.size() < Math.ceil(NUM_IMAGES/3))
-                {
-                    if (bitCount != 3)
-                    {
-                        bitArr[bitCount] = image;
-                        bitCount++;
-                        //imgCount++;
-                        list.add(bitArr);
-                        setRecycler();
-                    } else if (bitCount == 3)
-                    {
-                        list.add(bitArr);
-                        bitArr = new Bitmap[3];
-                        bitArr[0] = image;
-                        bitCount = 1;
-                        imgCount++;
-                        setRecycler();
-                    }
-                }
-                else
-                {
-                    if(imgCount == Math.ceil(NUM_IMAGES/3))
-                    {
-                        imgCount = 0;
-                    }
-                    if (bitCount != 3)
-                    {
-                        bitArr[bitCount] = image;
-                        bitCount++;
-                        //imgCount++;
-                        list.add(bitArr);
-                        setRecycler();
-                    } else if (bitCount == 3)
-                    {
-                        list.set(imgCount, bitArr);
-                        bitArr = new Bitmap[3];
-                        bitArr[0] = image;
-                        bitCount = 1;
-                        imgCount++;
-                        setRecycler();
-                    }
-
-                }
-
-
-
+                 list[imgCount][bitCount] = image;
+                 bitCount++;
+                 setRecycler();
+                 if (bitCount == 3)
+                 {
+                     bitCount = 0;
+                     imgCount++;
+                 }
+                 if (imgCount*3+bitCount == NUM_IMAGES)
+                 {
+                     imgCount = 0;
+                     bitCount = 0;
+                 }
             }
             else
             {
                 //error
                 makeToast("no image found");
             }
-
+            loading = false;
         }
 
     }
