@@ -91,7 +91,7 @@ public class StudentResultsFrag extends Fragment
             @Override
             public void onClick(View v)
             {
-                curList.sort(new TestSorter());
+                curList.sort(new DescendTestSorter());
                 setRecycler();
             }
         });
@@ -102,7 +102,8 @@ public class StudentResultsFrag extends Fragment
             @Override
             public void onClick(View v)
             {
-                curList.sort(new DescendTestSorter());
+
+                curList.sort(new TestSorter());
                 setRecycler();
             }
         });

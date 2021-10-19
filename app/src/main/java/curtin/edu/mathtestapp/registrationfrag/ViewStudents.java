@@ -100,7 +100,7 @@ public class ViewStudents extends Fragment
         public StudentDataHolder onCreateViewHolder(ViewGroup parent, int viewType)
         {
             LayoutInflater li = LayoutInflater.from(getActivity());
-            View view = li.inflate(R.layout.view_list_row, parent, false);
+            View view = li.inflate(R.layout.view_list_row_student, parent, false);
             return new StudentDataHolder(view);
         }
 

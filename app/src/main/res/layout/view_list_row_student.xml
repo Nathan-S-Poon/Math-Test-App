@@ -12,6 +12,13 @@
         android:layout_height="80dp"
         android:text="name" />
     <Button
+        android:id="@+id/viewTests"
+        android:text="view tests"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="80dp"
+        />
+    <Button
         android:id="@+id/deleteButton"
         android:text="delete"
         android:layout_width="0dp"

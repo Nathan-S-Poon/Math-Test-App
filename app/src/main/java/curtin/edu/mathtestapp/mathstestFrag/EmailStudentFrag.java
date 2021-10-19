@@ -313,6 +313,8 @@ public class EmailStudentFrag extends Fragment
         private LinearLayout row;
         private Button delete;
 
+
+
         public SelectDataHolder(@NonNull View itemView)
         {
             super(itemView);

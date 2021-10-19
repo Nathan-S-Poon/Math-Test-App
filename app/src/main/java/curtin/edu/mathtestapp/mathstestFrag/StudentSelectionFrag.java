@@ -132,6 +132,7 @@ public class StudentSelectionFrag extends Fragment
         private LinearLayout row;
         private Button delete;
 
+
         public StudentDataHolder(@NonNull View itemView)
         {
             super(itemView);

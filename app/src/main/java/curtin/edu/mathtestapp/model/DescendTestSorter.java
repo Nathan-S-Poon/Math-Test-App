@@ -16,20 +16,58 @@ public class DescendTestSorter implements Comparator<TestResult>
         int total1 = Integer.parseInt(scoreStr1[1]);
         int score2 = Integer.parseInt(scoreStr2[0]);
         int total2 = Integer.parseInt(scoreStr2[1]);
-        double per1 = score1/(double)total1;
-        double per2 = score2/(double)total2;
-        if(per1 > per2)
+        if(total1 == 0 || total2 == 0)
         {
-            return -1;
+            if(total1 == 0 && total2 ==0)
+            {
+                return 0;
+            }
+            if(total1 == 0)
+            {
+                if(score2 > 0)
+                {
+                    return -1;
+                }
+                else if(score2 < 0)
+                {
+                    return 1;
+                }
+                else
+                {
+                    return 1;
+                }
+            }
+            else
+            {
+                if(score1 > 0)
+                {
+                    return 1;
+                }
+                else if(score1 < 0)
+                {
+                    return -1;
+                }
+                else
+                {
+                    return -1;
+                }
+            }
         }
-        else if (per2 > per1)
+        if(total1 != 0 && total2 != 0)
         {
-            return 1;
+            double per1 = score1 / (double) total1;
+            double per2 = score2 / (double) total2;
+            if (per1 > per2)
+            {
+                return 1;
+            } else if (per2 > per1)
+            {
+                return -1;
+            } else
+            {
+                return 0;
+            }
         }
-        else
-        {
-            return 0;
-        }
-
+        return 0;
     }
 }
