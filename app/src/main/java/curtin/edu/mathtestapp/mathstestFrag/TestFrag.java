@@ -117,8 +117,8 @@ public class TestFrag extends Fragment
                 nextOption.setVisibility(View.INVISIBLE);
             }
             prevOption.setVisibility(View.INVISIBLE);
-            //listIndex = 0;
-            //endIndex = 3;
+            listIndex = 0;
+            endIndex = 3;
             setFour(choiceList.get(0), choiceList.get(1), choiceList.get(2), choiceList.get(3));
         }
     }
@@ -189,8 +189,7 @@ public class TestFrag extends Fragment
         multi2.setText(ans2);
         multi3.setText(ans3);
         multi4.setText(ans4);
-        listIndex = 0;
-        endIndex = 3;
+
     }
 
     private void testError(String message)

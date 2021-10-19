@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:id="@+id/testRecyclerLayout">
+
+    <Button
+        android:id="@+id/backToMenu"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_weight="1"
+        android:text="Menu"/>
+
+    <LinearLayout
+        android:id="@+id/buttonLinearLayout"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        >
+    <Button
+        android:id="@+id/selectAll"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:text="Select all results"/>
+
+    <Button
+        android:id="@+id/toEmail"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:text="email results"/>
+
+    <Button
+        android:id="@+id/sortAButton"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:text="sort scores by ascending order"/>
+
+    <Button
+        android:id="@+id/sortDButton"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:text="sort scores by descending order"/>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/TestListText"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_weight="1"
+        android:text="Test Results List"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/viewTestRecycle"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="9"
+        android:orientation="vertical">
+    </androidx.recyclerview.widget.RecyclerView>
+
+    <TextView
+        android:id="@+id/selectedListText"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_weight="1"
+        android:text="Selected Results"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/selectedTestsRecycle"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="9"
+        android:orientation="vertical">
+    </androidx.recyclerview.widget.RecyclerView>
+
+
+</LinearLayout>
