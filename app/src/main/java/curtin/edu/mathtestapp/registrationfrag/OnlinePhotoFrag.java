@@ -47,6 +47,8 @@ import curtin.edu.mathtestapp.model.Student;
 
 public class  OnlinePhotoFrag extends Fragment
 {
+    private static final int NUM_IMAGES = 5;
+
     private Button searchButton;
     private EditText searchInput;
     private RecyclerView photoRecycler;
@@ -99,6 +101,7 @@ public class  OnlinePhotoFrag extends Fragment
         bitArr = new Bitmap[3];
         list = new ArrayList<Bitmap[]>();
         bitCount = 0;
+        imgCount = 0;
         if(bundle != null)
         {
             isEdit = bundle.getBoolean("edit");
@@ -140,7 +143,7 @@ public class  OnlinePhotoFrag extends Fragment
         searchInput = (EditText) view.findViewById(R.id.searchInput);
         photoRecycler = (RecyclerView) view.findViewById(R.id.imageRecycler);
         leave = (Button) view.findViewById(R.id.leaveButton);
-
+        setRecycler();
         leave.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -174,8 +177,14 @@ public class  OnlinePhotoFrag extends Fragment
             {
                 if(!searchInput.getText().toString().equals(""))
                 {
+
                     String searchValues = searchInput.getText().toString();
                     new PixabayTask().execute(searchValues);
+
+                }
+                else
+                {
+                    makeToast("need an input");
                 }
 
             }
@@ -213,7 +222,7 @@ public class  OnlinePhotoFrag extends Fragment
         public PhotoDataHolder onCreateViewHolder(ViewGroup parent, int viewType)
         {
             LayoutInflater li = LayoutInflater.from(getActivity());
-            View view = li.inflate(R.layout.view_list_row, parent, false);
+            View view = li.inflate(R.layout.photos_row_layout, parent, false);
             return new PhotoDataHolder(view);
         }
 
@@ -320,15 +329,16 @@ public class  OnlinePhotoFrag extends Fragment
             {
                 URL url = new URL(urlString);
                 conn = (HttpURLConnection) url.openConnection();
+                System.out.println(conn.getResponseCode());
                 if(conn == null)
                 {
                     //error
                     throw new IOException("no connection");
                 }
-                else if(conn.getResponseCode()==HttpURLConnection.HTTP_OK)
+                else if(conn.getResponseCode()!=HttpURLConnection.HTTP_OK)
                 {
                     //throw error
-                    throw new IOException("no connection");
+                    throw new IOException("HTTP not okay, no connection");
                 }
                 data = downloadToString(conn);
 
@@ -402,12 +412,12 @@ public class  OnlinePhotoFrag extends Fragment
                 if(conn == null)
                 {
                     //error
-                    throw new IOException("no connection");
+                    throw new IOException("no connection 2");
                 }
-                else if(conn.getResponseCode()==HttpURLConnection.HTTP_OK)
+                else if(conn.getResponseCode()!=HttpURLConnection.HTTP_OK)
                 {
                     //throw error
-                    throw new IOException("no connection");
+                    throw new IOException("no connection http 2");
                 }
 
             }
@@ -428,15 +438,12 @@ public class  OnlinePhotoFrag extends Fragment
                 ByteArrayOutputStream buffer = new ByteArrayOutputStream();
                 int nRead;
                 byte[] bData = new byte[4096];
-                int progress = 0;
                 while ((nRead = inputStream.read(bData, 0, bData.length)) != -1)
                 {
                     buffer.write(bData, 0, nRead);
-                    progress = progress + nRead;
-                    Log.d("Hello", String.valueOf(byteData.length));
-                    byteData = buffer.toByteArray();
-                    image = BitmapFactory.decodeByteArray(byteData, 0, byteData.length);
                 }
+                byteData = buffer.toByteArray();
+                image = BitmapFactory.decodeByteArray(byteData, 0, byteData.length);
             }
             catch (IOException e)
             {
@@ -453,24 +460,51 @@ public class  OnlinePhotoFrag extends Fragment
             if(image != null)
             {
                 //put image
-                if(bitCount != 3)
+                if(list.size() < Math.ceil(NUM_IMAGES/3))
                 {
-                    bitArr[bitCount] = image;
-                    bitCount++;
-                    imgCount++;
-                    if (imgCount == 50)
+                    if (bitCount != 3)
+                    {
+                        bitArr[bitCount] = image;
+                        bitCount++;
+                        //imgCount++;
+                        list.add(bitArr);
+                        setRecycler();
+                    } else if (bitCount == 3)
                     {
                         list.add(bitArr);
+                        bitArr = new Bitmap[3];
+                        bitArr[0] = image;
+                        bitCount = 1;
+                        imgCount++;
+                        setRecycler();
                     }
                 }
-                else if(bitCount == 3)
+                else
                 {
-                    list.add(bitArr);
-                    bitArr = new Bitmap[3];
-                    bitArr[0] = image;
-                    bitCount = 1;
-                    imgCount++;
+                    if(imgCount == Math.ceil(NUM_IMAGES/3))
+                    {
+                        imgCount = 0;
+                    }
+                    if (bitCount != 3)
+                    {
+                        bitArr[bitCount] = image;
+                        bitCount++;
+                        //imgCount++;
+                        list.add(bitArr);
+                        setRecycler();
+                    } else if (bitCount == 3)
+                    {
+                        list.set(imgCount, bitArr);
+                        bitArr = new Bitmap[3];
+                        bitArr[0] = image;
+                        bitCount = 1;
+                        imgCount++;
+                        setRecycler();
+                    }
+
                 }
+
+
 
             }
             else
