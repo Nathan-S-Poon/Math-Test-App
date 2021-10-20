@@ -148,9 +148,9 @@ public class ViewStudents extends Fragment
                     @Override
                     public void onClick(View v)
                     {
-                        list.deleteStudent(data);
-                        //delete test info
                         testList.deleteStudentResults(data.getID());
+                        list.deleteStudent(data);
+                        //delete test inf
                         setRecycler();
                     }
                 });

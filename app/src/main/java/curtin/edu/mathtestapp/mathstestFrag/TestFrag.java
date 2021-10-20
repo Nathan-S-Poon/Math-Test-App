@@ -527,7 +527,7 @@ public class TestFrag extends Fragment
         protected String doInBackground(Void... params)
         {
             String result = "";//TODO use emulator ip
-            String completeURL = Uri.parse("https://172.31.234.77:8000/random/question/")
+            String completeURL = Uri.parse("https://172.31.235.175:8000/random/question/")
                     .buildUpon()
                     .appendQueryParameter("method", "thedata.getit")
                     .appendQueryParameter("api_key", API_KEY)

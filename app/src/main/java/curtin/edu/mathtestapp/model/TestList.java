@@ -81,8 +81,8 @@ public class TestList
         {
             if(id == list.get(i).getId())
             {
-                list.remove(list.get(i));
                 removeTestDb(list.get(i));
+                list.remove(list.get(i));
             }
         }
     }

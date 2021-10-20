@@ -176,7 +176,7 @@ public class StudentList
             eDb.insert(EmailTable.NAME, null, cv);
         }
     }
-    private void addAnEmailDb(String name, String num)
+    private void addAnEmailDb(int name, String num)
     {
         ContentValues cv = new ContentValues();
         cv.put(EmailTable.Cols.ID, name);
@@ -184,7 +184,7 @@ public class StudentList
         eDb.insert(EmailTable.NAME, null, cv);
     }
 
-    private void addAPhoneNumDb(String name, String num)
+    private void addAPhoneNumDb(int name, int num)
     {
         ContentValues cv = new ContentValues();
         cv.put(StudentAndPhoneTable.Cols.ID, name);
@@ -203,8 +203,7 @@ public class StudentList
     private void removePhoneDb(Student student)//removes all phone numbers of that student
     {
         String[] whereValue = {String.valueOf(student.getID())};
-        phDb.delete(StudentAndPhoneTable.NAME, StudentAndPhoneTable.Cols.ID + " = ?", whereValue);
-        removeEmailDb(student);
+        phDb.delete(StudentAndPhoneTable.NAME, StudentAndPhoneTable.Cols.ID + " = ?", whereValue);;
     }
     private void removeEmailDb(Student student)//removes all phone numbers of that student
     {
@@ -238,8 +237,16 @@ public class StudentList
         String[] whereValue = {String.valueOf(student.getID())};
         db.update(StudentTable.NAME, cv, StudentTable.Cols.ID + " = ?", whereValue);
         //update phones and emails
-        updatePhoneDb(student);
-        updateEmailDb(student);
+        removePhoneDb(student);
+        for(int i = 0; i < student.getNumbers().size(); i++)
+        {
+            addAPhoneNumDb(student.getID(), student.getNumbers().get(i));
+        }
+        removeEmailDb(student);
+        for(int i = 0; i < student.getNumbers().size(); i++)
+        {
+            addAnEmailDb(student.getID(), student.getEmails().get(i));
+        }
 
     }
 

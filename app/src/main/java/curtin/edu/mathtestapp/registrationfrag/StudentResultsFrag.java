@@ -82,7 +82,7 @@ public class StudentResultsFrag extends Fragment
         ascend = (Button) view.findViewById(R.id.sortAButton);
         //recyclerview set up
         recycleTest = (RecyclerView) view.findViewById(R.id.viewStudentTestRecycle);
-        curList = list.getResults(id);
+        //curList = list.getResults(id);
         setRecycler();
 
         descend.setOnClickListener(new View.OnClickListener()
