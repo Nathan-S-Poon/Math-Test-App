@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:id="@+id/studentEmailRecycler">
+
+    <Button
+        android:id="@+id/backToMenu"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:textSize="20dp"
+        android:layout_weight="1"
+        android:text="back to Test results"/>
+
+    <Button
+        android:id="@+id/sendResults"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:textSize="20dp"
+        android:layout_weight="1"
+        android:text="Send Test Results to Students"/>
+
+    <TextView
+        android:id="@+id/studentListText"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:textSize="20dp"
+        android:layout_weight="1"
+        android:text="Student List"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/viewEmailStudents"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="9"
+        android:orientation="vertical">
+    </androidx.recyclerview.widget.RecyclerView>
+
+    <TextView
+        android:id="@+id/selectedListText"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:textSize="20dp"
+        android:layout_weight="1"
+        android:text="Selected Students"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/selectEmailStudents"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="9"
+        android:orientation="vertical">
+    </androidx.recyclerview.widget.RecyclerView>
+
+
+</LinearLayout >

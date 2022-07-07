@@ -151,7 +151,6 @@ public class StudentSelectionFrag extends Fragment
             {
                 System.out.println(data.getFirstName());
                 name.setText(data.getFirstName() + " " + data.getLastName());
-                //TODO how to store images in database
                 row.setOnClickListener(new View.OnClickListener()
                 {
                     @Override

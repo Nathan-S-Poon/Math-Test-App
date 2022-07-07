@@ -87,6 +87,7 @@ public class TestFrag extends Fragment
         if(choiceList.size() == 1)
         {
             //discard
+            fetchNextQuestion();
         }
         else if(choiceList.size() == 0)
         {
@@ -355,7 +356,6 @@ public class TestFrag extends Fragment
                 testError("Test ended");
             }
         });
-        //TODO need to fix
         nextOption.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -363,7 +363,6 @@ public class TestFrag extends Fragment
             {
                 if(!loading)
                 {
-                    //TODO what if only one question left
                     if (choiceList.size() - endIndex - 1 == 2)//If two options left
                     {
                         listIndex = endIndex + 1;
@@ -526,7 +525,7 @@ public class TestFrag extends Fragment
         @Override
         protected String doInBackground(Void... params)
         {
-            String result = "";//TODO use emulator ip
+            String result = "";
             String completeURL = Uri.parse("https://172.31.235.175:8000/random/question/")
                     .buildUpon()
                     .appendQueryParameter("method", "thedata.getit")
@@ -537,7 +536,7 @@ public class TestFrag extends Fragment
             {
                 URL url = new URL(completeURL);
                 HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
-                DownloadUtils.addCertificate(getContext(), conn);//TODO reference from prac 6
+                DownloadUtils.addCertificate(getContext(), conn);
                 if (conn.getResponseCode() != HttpsURLConnection.HTTP_OK)
                 {
                     throw new GeneralSecurityException("error, cannot connect to server");
@@ -558,7 +557,6 @@ public class TestFrag extends Fragment
                     }
                     baos.close();
                     result = new String(baos.toByteArray());
-                    System.out.println(result);
                 }
                 catch (IOException e)
                 {
@@ -573,12 +571,12 @@ public class TestFrag extends Fragment
             catch (IOException e)
             {
                 Log.e(TAG, e.getMessage(),e);
-                //testError("error, cannot connect to server");//TODO handle errors connecting
+                testError("error, cannot connect to server");
             }
             catch (GeneralSecurityException e)
             {
                 Log.e(TAG, e.getMessage(),e);
-                //testError("error, cannot connect to server");
+                testError("error, cannot connect to server");
             }
 
             return result;

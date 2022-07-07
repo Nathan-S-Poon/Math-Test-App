@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:id="@+id/StudentTestRecyclerLayout">
+
+    <Button
+        android:id="@+id/backToMenu"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:textSize="30dp"
+        android:layout_weight="1"
+        android:text="Menu"/>
+    <Button
+        android:id="@+id/sortAButton"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:textSize="30dp"
+        android:layout_weight="1"
+        android:text="sort scores by ascending order"/>
+
+    <Button
+        android:id="@+id/sortDButton"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:textSize="30dp"
+        android:layout_weight="1"
+        android:text="sort scores by descending order"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/viewStudentTestRecycle"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="9"
+        android:orientation="vertical">
+    </androidx.recyclerview.widget.RecyclerView>
+
+
+</LinearLayout >

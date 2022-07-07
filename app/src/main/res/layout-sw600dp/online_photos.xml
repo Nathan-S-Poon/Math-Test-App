@@ -8,9 +8,10 @@
 
     <Button
         android:id="@+id/searchButton"
-        android:layout_width="131dp"
-        android:layout_height="46dp"
+        android:layout_width="161dp"
+        android:layout_height="64dp"
         android:text="Search"
+        android:textSize="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.132"
@@ -20,56 +21,60 @@
 
     <EditText
         android:id="@+id/searchInput"
-        android:layout_width="125dp"
-        android:layout_height="61dp"
+        android:layout_width="176dp"
+        android:layout_height="80dp"
+        android:textSize="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.566"
+        app:layout_constraintHorizontal_bias="0.454"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/selectText"
-        app:layout_constraintVertical_bias="0.053" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.201" />
 
     <TextView
         android:id="@+id/searchText"
-        android:layout_width="125dp"
-        android:layout_height="61dp"
+        android:layout_width="192dp"
+        android:layout_height="83dp"
+        android:textSize="20dp"
         android:text="Enter image to search:"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.129"
+        app:layout_constraintHorizontal_bias="0.136"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/searchButton"
-        app:layout_constraintVertical_bias="0.111" />
+        app:layout_constraintVertical_bias="0.043" />
 
     <ImageView
         android:id="@+id/selectImg"
-        android:layout_width="138dp"
-        android:layout_height="103dp"
+        android:layout_width="211dp"
+        android:layout_height="219dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.824"
+        app:layout_constraintHorizontal_bias="0.773"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.041" />
+        app:layout_constraintVertical_bias="0.043" />
 
     <TextView
         android:id="@+id/selectText"
-        android:layout_width="118dp"
-        android:layout_height="33dp"
+        android:layout_width="156dp"
+        android:layout_height="43dp"
+        android:textSize="20dp"
         android:layout_marginTop="13dp"
         android:text="Selected Image:"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.808"
+        app:layout_constraintHorizontal_bias="0.758"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/selectImg"
-        app:layout_constraintVertical_bias="0.01" />
+        app:layout_constraintVertical_bias="0.009" />
 
     <Button
         android:id="@+id/leaveButton"
-        android:layout_width="129dp"
-        android:layout_height="51dp"
+        android:layout_width="162dp"
+        android:layout_height="77dp"
         android:text="Leave"
+        android:textSize="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.056"
@@ -80,7 +85,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/imageRecycler"
         android:layout_width="match_parent"
-        android:layout_height="350dp"
+        android:layout_height="450dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"

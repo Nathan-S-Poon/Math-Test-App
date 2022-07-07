@@ -8,231 +8,248 @@
 
     <TextView
         android:id="@+id/questionText"
-        android:layout_width="158dp"
-        android:layout_height="69dp"
+        android:layout_width="521dp"
+        android:layout_height="135dp"
         android:text="Question: "
+        android:textSize="30dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.553"
+        app:layout_constraintHorizontal_bias="0.439"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.075" />
+        app:layout_constraintVertical_bias="0.097" />
 
     <TextView
         android:id="@+id/scoreText"
-        android:layout_width="59dp"
-        android:layout_height="52dp"
+        android:layout_width="187dp"
+        android:layout_height="58dp"
         android:text="Score: "
+        android:textSize="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.204"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.073" />
+        app:layout_constraintVertical_bias="0.041" />
 
     <TextView
         android:id="@+id/totalScoreText"
-        android:layout_width="59dp"
-        android:layout_height="29dp"
+        android:layout_width="99dp"
+        android:layout_height="60dp"
         android:text="Score: "
+        android:textSize="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.082"
+        app:layout_constraintEnd_toStartOf="@+id/scoreText"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.071" />
+        app:layout_constraintVertical_bias="0.04" />
 
     <Button
         android:id="@+id/multiTri"
-        android:layout_width="83dp"
-        android:layout_height="60dp"
+        android:layout_width="140dp"
+        android:layout_height="100dp"
         android:text="triangle"
+        android:textSize="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.469"
+        app:layout_constraintHorizontal_bias="0.468"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.323" />
+        app:layout_constraintVertical_bias="0.243" />
 
     <Button
         android:id="@+id/prevChoice"
-        android:layout_width="105dp"
-        android:layout_height="74dp"
+        android:layout_width="140dp"
+        android:layout_height="100dp"
+        android:textSize="20dp"
         android:text="previous options"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.052"
+        app:layout_constraintHorizontal_bias="0.092"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.216" />
+        app:layout_constraintVertical_bias="0.227" />
 
     <Button
         android:id="@+id/multi3"
-        android:layout_width="83dp"
-        android:layout_height="60dp"
+        android:layout_width="140dp"
+        android:layout_height="100dp"
         android:text="answer 3"
+        android:textSize="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.216"
+        app:layout_constraintHorizontal_bias="0.246"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.517" />
+        app:layout_constraintVertical_bias="0.473" />
 
     <Button
         android:id="@+id/multi1"
-        android:layout_width="83dp"
-        android:layout_height="60dp"
+        android:layout_width="140dp"
+        android:layout_height="100dp"
+        android:textSize="20dp"
         android:text="answer 1"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.216"
+        app:layout_constraintHorizontal_bias="0.257"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.412" />
+        app:layout_constraintVertical_bias="0.354" />
 
     <Button
         android:id="@+id/nextChoice"
-        android:layout_width="90dp"
-        android:layout_height="83dp"
+        android:layout_width="140dp"
+        android:layout_height="100dp"
+        android:textSize="20dp"
         android:text="next options"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.865"
+        app:layout_constraintHorizontal_bias="0.85"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.216" />
+        app:layout_constraintVertical_bias="0.226" />
 
     <Button
         android:id="@+id/multi4"
-        android:layout_width="83dp"
-        android:layout_height="60dp"
+        android:layout_width="140dp"
+        android:layout_height="100dp"
         android:text="answer 4"
+        android:textSize="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.722"
+        app:layout_constraintHorizontal_bias="0.677"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.517" />
+        app:layout_constraintVertical_bias="0.473" />
 
     <Button
         android:id="@+id/multi2"
-        android:layout_width="83dp"
-        android:layout_height="60dp"
+        android:layout_width="140dp"
+        android:layout_height="100dp"
+        android:textSize="20dp"
         android:text="answer 2"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.722"
+        app:layout_constraintHorizontal_bias="0.677"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.412" />
+        app:layout_constraintVertical_bias="0.355" />
 
     <TextView
         android:id="@+id/inputAnsText"
-        android:layout_width="96dp"
-        android:layout_height="71dp"
+        android:layout_width="164dp"
+        android:layout_height="112dp"
         android:text="Input answer:"
+        android:textSize="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.18"
+        app:layout_constraintHorizontal_bias="0.246"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.454" />
+        app:layout_constraintVertical_bias="0.403" />
 
     <TextView
         android:id="@+id/selectMultiChoice"
-        android:layout_width="158dp"
-        android:layout_height="69dp"
+        android:layout_width="222dp"
+        android:layout_height="86dp"
         android:text=""
+        android:textSize="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.608"
+        app:layout_constraintHorizontal_bias="0.487"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.673" />
+        app:layout_constraintVertical_bias="0.552" />
 
     <TextView
         android:id="@+id/multichoiceText"
-        android:layout_width="97dp"
-        android:layout_height="79dp"
+        android:layout_width="162dp"
+        android:layout_height="101dp"
         android:text="multiChoice answer:"
+        android:textSize="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.181"
+        app:layout_constraintHorizontal_bias="0.236"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.684" />
+        app:layout_constraintVertical_bias="0.566" />
 
     <EditText
         android:id="@+id/inputAnswer"
-        android:layout_width="158dp"
-        android:layout_height="69dp"
+        android:layout_width="164dp"
+        android:layout_height="112dp"
         android:text=""
+        android:textSize="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.608"
+        app:layout_constraintHorizontal_bias="0.463"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.453" />
+        app:layout_constraintVertical_bias="0.404" />
 
     <Button
         android:id="@+id/nextButton"
-        android:layout_width="110dp"
-        android:layout_height="51dp"
+        android:layout_width="146dp"
+        android:layout_height="73dp"
         android:text="Next Question"
+        android:textSize="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.913"
+        app:layout_constraintHorizontal_bias="0.804"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.772" />
+        app:layout_constraintVertical_bias="0.616" />
 
     <TextView
         android:id="@+id/timeText"
-        android:layout_width="120dp"
-        android:layout_height="28dp"
+        android:layout_width="204dp"
+        android:layout_height="58dp"
         android:text="Total time: "
+        android:textSize="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.443"
+        app:layout_constraintHorizontal_bias="0.44"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.843" />
+        app:layout_constraintVertical_bias="0.718" />
 
     <ProgressBar
         android:id="@+id/timerBar"
         style="@android:style/Widget.ProgressBar.Horizontal"
-        android:layout_width="185dp"
-        android:layout_height="41dp"
+        android:layout_width="536dp"
+        android:layout_height="61dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.384"
+        app:layout_constraintHorizontal_bias="0.483"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.9" />
+        app:layout_constraintVertical_bias="0.777" />
 
     <TextView
         android:id="@+id/totalTimeText"
-        android:layout_width="83dp"
-        android:layout_height="28dp"
+        android:layout_width="125dp"
+        android:layout_height="39dp"
         android:text="Total Time: "
+        android:textSize="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.14"
+        app:layout_constraintEnd_toStartOf="@+id/timeText"
+        app:layout_constraintHorizontal_bias="0.942"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.843" />
+        app:layout_constraintVertical_bias="0.709" />
 
     <Button
         android:id="@+id/endButton"
-        android:layout_width="97dp"
-        android:layout_height="60dp"
+        android:layout_width="146dp"
+        android:layout_height="73dp"
         android:text="End Test"
+        android:textSize="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.91"
+        app:layout_constraintHorizontal_bias="0.804"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.913" />
+        app:layout_constraintVertical_bias="0.702" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

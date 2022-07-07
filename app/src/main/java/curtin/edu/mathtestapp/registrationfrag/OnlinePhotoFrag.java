@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.health.SystemHealthManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,8 +49,8 @@ import curtin.edu.mathtestapp.model.Student;
 
 public class  OnlinePhotoFrag extends Fragment
 {
-    private static final int NUM_IMAGES = 5;
-
+    private static final int NUM_IMAGES = 10;
+    
     private Button searchButton;
     private EditText searchInput;
     private RecyclerView photoRecycler;
@@ -340,7 +341,7 @@ public class  OnlinePhotoFrag extends Fragment
 
 
 
-//TODO reference
+//Lecture 6 Demo Code: 9/13/2021
     /***********************************
      *  Async tasks
      ********************************/
@@ -361,6 +362,7 @@ public class  OnlinePhotoFrag extends Fragment
             Uri.Builder urlStr = Uri.parse("https://pixabay.com/api/").buildUpon();
             urlStr.appendQueryParameter("key", "23319229-94b52a4727158e1dc3fd5f2db");
             urlStr.appendQueryParameter("q", params[0]);
+            urlStr.appendQueryParameter("per_page", Integer.toString(NUM_IMAGES));
             String urlString = urlStr.build().toString();
 
             HttpURLConnection conn = null;
@@ -383,14 +385,13 @@ public class  OnlinePhotoFrag extends Fragment
             }
             catch (MalformedURLException e)
             {
-                //TODO what to put here
                 publishProgress(e.getMessage());
             }
             catch (IOException e)
             {
                 publishProgress(e.getMessage());
             }
-
+            //System.out.println(data);
             return data;
         }
         @Override
@@ -398,21 +399,27 @@ public class  OnlinePhotoFrag extends Fragment
         {
             if(!data.equals(""))
             {
-                String imageUrl = null;
+                String[] imageUrl = new String[NUM_IMAGES];
                 try
                 {
                     JSONObject jBase = new JSONObject(data);
                     JSONArray jHits = jBase.getJSONArray("hits");
-                    if(jHits.length()>0)
+                    int i = 0;
+                    while(i < NUM_IMAGES)
                     {
-                        JSONObject jHitsItem = jHits.getJSONObject(0);
-                        imageUrl = jHitsItem.getString("largeImageURL");
+                        if (jHits.length() > 0)
+                        {
+                            JSONObject jHitsItem = jHits.getJSONObject(i);
+                            imageUrl[i] = jHitsItem.getString("largeImageURL");
+                        }
+                        //System.out.println(imageUrl);
+                        i++;
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
                     makeToast(e.getMessage());
                 }
-                if(imageUrl != null)
+                if(imageUrl.length != 0)
                 {
                     new ImageURLTask().execute(imageUrl);
                 }
@@ -428,7 +435,7 @@ public class  OnlinePhotoFrag extends Fragment
     }
 
     //Async task 2
-    private class ImageURLTask extends AsyncTask<String, String, Bitmap>
+    private class ImageURLTask extends AsyncTask<String, String, Bitmap[]>
     {
         @Override
         protected void onProgressUpdate(String... values)
@@ -437,85 +444,85 @@ public class  OnlinePhotoFrag extends Fragment
             makeToast(values[0]);
         }
         @Override
-        protected Bitmap doInBackground(String...params)
+        protected Bitmap[] doInBackground(String...params)
         {
-            Bitmap image = null;
-            Uri.Builder url = Uri.parse(params[0]).buildUpon();
-            String  urlString = url.build().toString();
-            HttpURLConnection conn = null;
-            try
+            Bitmap[] image = new Bitmap[NUM_IMAGES];
+            for(int i =0; i < params.length; i++)
             {
-                URL url2 = new URL(urlString);
-                conn = (HttpURLConnection) url2.openConnection();
-                if(conn == null)
+                Uri.Builder url = Uri.parse(params[i]).buildUpon();
+                String urlString = url.build().toString();
+                HttpURLConnection conn = null;
+                try
                 {
-                    //error
-                    throw new IOException("no connection 2");
-                }
-                else if(conn.getResponseCode()!=HttpURLConnection.HTTP_OK)
-                {
-                    //throw error
-                    throw new IOException("no connection http 2");
-                }
+                    URL url2 = new URL(urlString);
+                    conn = (HttpURLConnection) url2.openConnection();
+                    if (conn == null)
+                    {
+                        //error
+                        throw new IOException("no connection 2");
+                    } else if (conn.getResponseCode() != HttpURLConnection.HTTP_OK)
+                    {
+                        //throw error
+                        throw new IOException("no connection http 2");
+                    }
 
-            }
-            catch (MalformedURLException e)
-            {
-                //TODO what to put here
-                publishProgress(e.getMessage());
-            }
-            catch (IOException e)
-            {
-                publishProgress(e.getMessage());
-            }
-            //Input stream
-            try
-            {
-                InputStream inputStream = conn.getInputStream();
-                byte[] byteData = null;
-                ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-                int nRead;
-                byte[] bData = new byte[4096];
-                while ((nRead = inputStream.read(bData, 0, bData.length)) != -1)
+                } catch (MalformedURLException e)
                 {
-                    buffer.write(bData, 0, nRead);
+                    publishProgress(e.getMessage());
+                } catch (IOException e)
+                {
+                    publishProgress(e.getMessage());
                 }
-                byteData = buffer.toByteArray();
-                image = BitmapFactory.decodeByteArray(byteData, 0, byteData.length);
-            }
-            catch (IOException e)
-            {
-                e.printStackTrace();
-                publishProgress(e.getMessage());
+                //Input stream
+                try
+                {
+                    InputStream inputStream = conn.getInputStream();
+                    byte[] byteData = null;
+                    ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+                    int nRead;
+                    byte[] bData = new byte[4096];
+                    while ((nRead = inputStream.read(bData, 0, bData.length)) != -1)
+                    {
+                        buffer.write(bData, 0, nRead);
+                    }
+                    byteData = buffer.toByteArray();
+                    image[i] = BitmapFactory.decodeByteArray(byteData, 0, byteData.length);
+                } catch (IOException e)
+                {
+                    e.printStackTrace();
+                    publishProgress(e.getMessage());
+                }
             }
 
             return image;
         }
 
         @Override
-        protected void onPostExecute(Bitmap image)
+        protected void onPostExecute(Bitmap[] image)
         {
-            if(image != null)
+            for(int i =0; i < image.length; i++)
             {
-                //put image
-                 list[imgCount][bitCount] = image;
-                 bitCount++;
-                 setRecycler();
-                 if (bitCount == 3)
-                 {
-                     bitCount = 0;
-                     imgCount++;
-                 }
-                 if (imgCount*3+bitCount == NUM_IMAGES)
-                 {
-                     imgCount = 0;
-                     bitCount = 0;
-                 }
-            }
-            else
-            {
-                //error
-                makeToast("no image found");
+                if (image != null)
+                {
+                    //put image
+                    list[imgCount][bitCount] = image[i];
+                    bitCount++;
+                    setRecycler();
+                    if (bitCount == 3)
+                    {
+                        bitCount = 0;
+                        imgCount++;
+                    }
+                    if (imgCount * 3 + bitCount == NUM_IMAGES)
+                    {
+                        imgCount = 0;
+                        bitCount = 0;
+                    }
+                } else
+                {
+                    //error
+                    makeToast("no image found");
+                }
             }
             loading = false;
         }

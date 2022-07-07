@@ -255,7 +255,7 @@ public class EmailStudentFrag extends Fragment
             {
                 System.out.println(data.getFirstName());
                 name.setText(data.getFirstName() + " " + data.getLastName());
-                //TODO how to store images in database
+
                 row.setOnClickListener(new View.OnClickListener()
                 {
                     @Override
@@ -314,7 +314,6 @@ public class EmailStudentFrag extends Fragment
         private Button delete;
 
 
-
         public SelectDataHolder(@NonNull View itemView)
         {
             super(itemView);
@@ -332,7 +331,6 @@ public class EmailStudentFrag extends Fragment
             {
 
                 name.setText(data.getFirstName() + " " + data.getLastName());
-                //TODO how to store images in database
                 delete.setOnClickListener(new View.OnClickListener()
                 {
                     @Override

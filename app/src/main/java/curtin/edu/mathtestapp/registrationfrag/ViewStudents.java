@@ -170,7 +170,6 @@ public class ViewStudents extends Fragment
                         }
                     }
                 });
-                //TODO how to store images in database
                 row.setOnClickListener(new View.OnClickListener()
                 {
                     @Override

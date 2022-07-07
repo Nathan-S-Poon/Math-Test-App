@@ -189,8 +189,8 @@
 
     <Button
         android:id="@+id/nextChoice"
-        android:layout_width="83dp"
-        android:layout_height="75dp"
+        android:layout_width="92dp"
+        android:layout_height="73dp"
         android:text="next options"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

@@ -61,7 +61,7 @@ public class TestList
         list.add(result);
         addTestDb(result);
     }
-    //TODO have student's name updated if student name changes
+
     public void update(int id, String name)
     {
         for(int i = 0; i < list.size(); i++)

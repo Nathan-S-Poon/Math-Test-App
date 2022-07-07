@@ -229,8 +229,8 @@ public class RegisterStudentFragment extends Fragment
         }
         //if getting photo from storage
         if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_STORAGE_PHOTO)
-        {//TODO put photo in right file and reference
-            //https://www.tutorialspoint.com/how-to-write-an-image-file-in-internal-storage-in-android
+        { //obtained from https://www.tutorialspoint.com/how-to-write-an-image-file-in-internal-storage-in-android
+            //(Accessed 19/10/2021)
             Uri image = resultIntent.getData();
             photoDisplay.setImageURI(image);
             //save photo in internal storage
@@ -504,7 +504,7 @@ public class RegisterStudentFragment extends Fragment
         });
 
         livePhoto.setOnClickListener(new View.OnClickListener()
-        {//TODO chekc app exists
+        {
             @Override
             public void onClick(View v)
             {
